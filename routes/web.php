@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,6 @@ use App\Http\Controllers\UserController;
 
 Route::post("/user-registration", [UserController::class, "userRegistration"]);
 Route::post("/user-login", [UserController::class, "userLogin"]);
+
+
+Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
