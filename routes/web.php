@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StudentClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route::post("/user-login", [UserController::class, "userLogin"]);
 
 
 Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
+Route::get('/student/class', [StudentClassController::class, 'student_class']);
