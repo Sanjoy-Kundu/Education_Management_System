@@ -40,4 +40,17 @@ class StudentClassController extends Controller
         return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
     }
    }
+
+
+   public function student_class_lists(Request $request){
+    try{
+        $classLists = StudentClass::all();
+        if(!$classLists){
+            return response()->json(['status' => 'fail', 'message' => "Data Error"]); 
+        }
+        return response()->json(['status' => 'success', 'classLists' => $classLists]);
+    }catch(Exception $ex){
+        return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+    }
+   }
 }

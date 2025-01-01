@@ -14,7 +14,7 @@ class UserController extends Controller
 
     public function loginPage(Request $request){
         try{
-            return "Im login Page";
+            return view('pages.login.loginPage');
         }catch(Exception $ex){
             return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
         }

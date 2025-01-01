@@ -13,10 +13,16 @@ Route::post("/user-registration", [UserController::class, "userRegistration"]);
 Route::post("/user-login", [UserController::class, "userLogin"]);
 
 
-Route::middleware(['auth:sanctum'])->group(function () {
+
 Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
 Route::get('/student/class', [StudentClassController::class, 'student_class']);
-Route::post('/student-class-post', [StudentClassController::class, 'student_class_post'])->middleware('auth:sanctum');
+
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+Route::post('/student-class-post', [StudentClassController::class, 'student_class_post']);
+Route::get('/student-class-lists', [StudentClassController::class, 'student_class_lists']);
 });
 
 

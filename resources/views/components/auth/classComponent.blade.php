@@ -36,3 +36,25 @@
             </div>
         </div>
     </main>
+
+
+    <script>
+        let token = localStorage.getItem('auth_token');
+        
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            getClassLists();
+        } else {
+            console.error('No auth token found');
+        }
+        
+        async function getClassLists() {
+            try {
+                const res = await axios.get('/student-class-lists');
+                console.log(res.data);
+            } catch (error) {
+                console.error('Error', error);
+            }
+        }
+        </script>
+        
