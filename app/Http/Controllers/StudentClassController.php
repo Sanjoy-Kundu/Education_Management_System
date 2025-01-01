@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentClassController extends Controller
 {
@@ -12,6 +14,30 @@ class StudentClassController extends Controller
         return view('pages.auth.classPage');
     }catch(Exception $ex){
         return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+    }
+   }
+
+
+
+   public function student_class_post(Request $request){
+    try{
+        
+        $request->validate([
+            'name' => 'required|max:255|unique:student_classes,name',
+            'section' => 'required',
+            'capacity' => 'required|integer',
+        ]);
+
+
+        StudentClass::create([
+            'user_id' => Auth::id(),
+            'name' => Str::upper($request->input('name')),
+            'section' => Str::upper($request->input('section')),
+            'capacity' => $request->input('capacity')
+        ]);
+        return response()->json(['status' => 'success', 'message' => 'Class Added Successfully']);
+    }catch(Exception $ex){
+        return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
     }
    }
 }

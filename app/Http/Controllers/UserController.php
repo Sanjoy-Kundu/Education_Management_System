@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+
+    public function loginPage(Request $request){
+        try{
+            return "Im login Page";
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+        }
+    }
+
+
     public function userRegistration(Request $request){
         try{
             $validated = $request->validate([
