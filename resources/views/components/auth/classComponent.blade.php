@@ -10,23 +10,21 @@
                     <div class="card">
                         <h5 class="card-header">Class Lists</h5>
                         <div class="card-body">
-                            <button class="btn btn-primary w-25">ADD CLASS</button><br><br>
+                            <button class="btn btn-primary w-25" data-bs-toggle="modal" data-bs-target="#exampleModal">ADD CLASS</button><br><br>
 
                             <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th scope="col">ID</th>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Section</th>
+                                            <th scope="col">Capacity</th>
                                             <th scope="col">Action</th>
                                        
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                        </tr>
+                                    <tbody id="lists-table-body">
+                                    
                                     </tbody>
                           
                             </table>
@@ -39,22 +37,91 @@
 
 
     <script>
-        let token = localStorage.getItem('auth_token');
-        
+        let token = localStorage.getItem('authToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            getClassLists();
         } else {
             console.error('No auth token found');
         }
-        
+        getClassLists();
         async function getClassLists() {
             try {
-                const res = await axios.get('/student-class-lists');
-                console.log(res.data);
+                let res = await axios.get('/student-class-lists');
+                let lists = res.data.classLists;
+                console.log(lists.length);
+                let listTableBody = $('#lists-table-body')
+                listTableBody.empty(); //clear previous data
+                lists.forEach((element,index) => {
+                    console.log(element)
+                    let tr = `
+                              <tr>
+                                <th scope="row">${index+1}</th>
+                                <td>${element.name}</td>
+                                <td>${element.section}</td>
+                                <td>${element.capacity}</td>
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <button type="button" class="btn btn-danger classDelete" data-id="${element.id}">DELETE</button>
+                                    <button type="button" class="btn btn-warning classEdit" data-id="${element.id}">EDIT</button>
+                                    <button type="button" class="btn btn-success classSectionAdd" data-id="${element.id}">ADD SECTION</button>
+                                    </div>
+                                </td>
+                             </tr>
+                    `
+                    listTableBody.append(tr)
+                });
             } catch (error) {
                 console.error('Error', error);
             }
+
+            $('.classDelete').on('click', function(){
+                let id = $(this).data('id')
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                    }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try{
+                            let res = await axios.post('/student-class-delete-by-id',{id:id})
+                            if(res.data.status === 'success'){
+                                await getClassLists();
+                                Swal.fire({
+                                title: "Deleted!",
+                                text: res.data.message,
+                                icon: "success",
+                                timer:3000
+                                });
+                            }else{
+                                Swal.fire({
+                                            icon: "error",
+                                            title: "Error",
+                                            text: res.data.message,
+                                        });
+                            }
+                        }catch(error){
+                            console.error("error",error)
+                        }
+                    }
+                });
+            })
+
+            
+            $('.classEdit').on('click', function(){
+                let id = $(this).data('id')
+                alert(id);
+            })
+
+            $('.classSectionAdd').on('click', function(){
+                let id = $(this).data('id')
+              
+            })
+
+
         }
         </script>
         

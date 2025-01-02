@@ -22,6 +22,7 @@ Route::get('/student/class', [StudentClassController::class, 'student_class']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('/student-class-post', [StudentClassController::class, 'student_class_post']);
+Route::post('/student-class-delete-by-id', [StudentClassController::class, 'student_class_delete_by_id']);
 Route::get('/student-class-lists', [StudentClassController::class, 'student_class_lists']);
 });
 

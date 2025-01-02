@@ -53,4 +53,22 @@ class StudentClassController extends Controller
         return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
     }
    }
+
+
+   public function student_class_delete_by_id(Request $request){
+        try{
+            $class_delete_id = $request->id;
+            $user_id = Auth::id();
+            $classData = StudentClass::where('id',$class_delete_id)->where("user_id",$user_id)->first();
+            if($classData){
+                $classData->delete();
+                return response()->json(['status' => 'success', 'message' => 'Class Deleted Successfully']);
+            }else{
+                return response()->json(['status' => 'fail', 'message' => 'invalid data']);
+            }
+
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+        }
+   }
 }
