@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Subject;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubjectController extends Controller
 {
@@ -24,20 +25,25 @@ class SubjectController extends Controller
             $request->validate([
                 'student_class_id' => 'required',
                 'name' => 'required|max:255',
-                'code' => 'required|unique:subjects,code',
+                'code' => 'required|max:255',
                 'full_marks' => 'required|integer',
             ]);
     
-    
-            Subject::create([
-                'user_id' => Auth::id(),
-                'name' => Str::upper($request->input('name')),
-                'code' => Str::upper($request->input('code')),
-                'student_class_id' => $request->input('student_class_id'),
-                'full_marks' => $request->input('full_marks')
-            ]);
-            return response()->json(['status' => 'success', 'message' => 'Subject Added Successfully']);
-        }catch(Exception $ex){
+            $checkUnique = Subject::where('code', $request->input('code'))->where('student_class_id', $request->input('student_class_id'))->where('name',$request->input('name'))->where('full_marks',$request->input('full_marks'))->first();
+            if($checkUnique){
+                return response()->json(['status' => 'errors', 'message' => 'Subject Code Already Exists']);
+            }else{
+                Subject::create([
+                    'user_id' => Auth::id(),
+                    'name' => Str::upper($request->input('name')),
+                    'code' => Str::upper($request->input('code')),
+                    'student_class_id' => $request->input('student_class_id'),
+                    'full_marks' => $request->input('full_marks')
+                ]);
+                return response()->json(['status' => 'success', 'message' => 'Subject Added Successfully']);
+            }
+        }
+        catch(Exception $ex){
             return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
         }
     }

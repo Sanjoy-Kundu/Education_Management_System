@@ -31,7 +31,7 @@ Route::post('/student-class-update-by-id', [StudentClassController::class, 'stud
 
 
 
-Route::post('/subject-post', [StudentClassController::class, 'subject_create']);
+Route::post('/subject-post', [SubjectController::class, 'subject_create']);
 });
 
 

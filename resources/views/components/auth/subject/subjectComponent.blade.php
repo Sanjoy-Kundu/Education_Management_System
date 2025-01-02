@@ -40,9 +40,10 @@
         let token = localStorage.getItem('authToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            console.log(token)
         } else {
             console.error('No auth token found');
         }
-  
+        
         </script>
         
