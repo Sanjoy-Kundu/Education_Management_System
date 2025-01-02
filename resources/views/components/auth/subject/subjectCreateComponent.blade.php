@@ -125,6 +125,7 @@
 
       if (res.data.status === 'success') {
         await getClassSelectLists();
+        await getSubjectListsShow();
         Swal.fire({
           title: "Created!",
           text: res.data.message,

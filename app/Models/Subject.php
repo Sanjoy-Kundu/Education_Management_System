@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\StudentClass;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subject extends Model
 {
@@ -15,4 +16,10 @@ class Subject extends Model
         'code',
         'full_marks'
     ];
+
+    //first do it then suject classmodel
+    public function studentClass()
+    {
+        return $this->belongsTo(StudentClass::class, 'student_class_id');
+    }
 }

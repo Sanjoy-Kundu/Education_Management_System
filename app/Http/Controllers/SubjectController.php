@@ -49,46 +49,28 @@ class SubjectController extends Controller
     }
 
 
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function all_subject_lists(Request $request){
+        try{
+            $subjectLists = Subject::with('studentClass')->get();
+            return response()->json(['status' => 'success', 'subjectLists' => $subjectLists]);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subject $subject)
+    
+    public function subject_delete_by_id(Request $request)
     {
-        //
+        try{
+            $subject = Subject::find($request->id);
+            if (!$subject) {
+                return response()->json(['status' => 'error', 'message' => 'Subject not found'], 404);
+            }
+            $subject->delete();
+            return response()->json(['status' => 'success', 'message' => 'Subject deleted successfully']);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+        }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Subject $subject)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Subject $subject)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Subject $subject)
-    {
-        //
-    }
+    
 }
