@@ -16,8 +16,8 @@
                     </a>
                     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{url('student/class')}}">Add Class</a>
-                            <a class="nav-link" href="#">Subject Setup</a>
+                            <a class="nav-link" href="{{url('/student/class')}}">Add Class</a>
+                            <a class="nav-link" href="{{url('/subject/lists')}}">Subject Setup</a>
                             <a class="nav-link" href="#">Exam Planer</a>
                             <a class="nav-link" href="#">Mark Entry</a>
                             <a class="nav-link" href="#">Ranking</a>
