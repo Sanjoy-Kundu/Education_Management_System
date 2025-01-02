@@ -55,6 +55,11 @@ class StudentClassController extends Controller
    }
 
 
+
+
+
+
+
    public function student_class_delete_by_id(Request $request){
         try{
             $class_delete_id = $request->id;
@@ -70,5 +75,57 @@ class StudentClassController extends Controller
         }catch(Exception $ex){
             return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
         }
+   }
+
+
+
+
+
+
+
+   public function student_class_detail_by_id(Request $request){
+    try{
+        $class_id = $request->id;
+        $user_id = Auth::id();
+
+        $classData = StudentClass::where('id',$class_id)->where("user_id",$user_id)->first();
+        if($classData){
+            return response()->json(['status' => 'success', 'classData' => $classData]);
+        }else{
+            return response()->json(['status' => 'fail', 'message' => 'invalid data']);
+        }
+    }catch(Exception $ex){
+        return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+    }
+
+
+   }
+
+
+
+
+
+
+   public function student_class_update_by_id(Request $request){
+    try{
+        $id = $request->id;
+        $user_id = Auth::id();
+        $name = $request->name;
+        $section = $request->section;
+        $capacity = $request->capacity;
+
+        $dataCheck = StudentClass::where('id',$id)->where('user_id',$user_id)->first();
+        if($dataCheck){
+            $dataCheck->name = Str::upper($request->name);
+            $dataCheck->section = Str::upper($request->section);
+            $dataCheck->capacity = $request->capacity;
+            $dataCheck->save();
+            return response()->json(["status" => "success", "message" => "Class Updated Successfully"]);
+        }else{
+            return response()->json(["status" => "fail", "message" => "Invalid Data"]);
+        }
+    }catch(Exception $ex){
+        return response()->json(['status' => 'errors', 'message' => $ex->getMessage()]);
+    }
    }
 }

@@ -52,7 +52,6 @@
                 let listTableBody = $('#lists-table-body')
                 listTableBody.empty(); //clear previous data
                 lists.forEach((element,index) => {
-                    console.log(element)
                     let tr = `
                               <tr>
                                 <th scope="row">${index+1}</th>
@@ -110,10 +109,11 @@
                 });
             })
 
-            
-            $('.classEdit').on('click', function(){
+
+            $('.classEdit').on('click',async function(){
                 let id = $(this).data('id')
-                alert(id);
+                await classEditModalShow(id);
+                $('#classEditModal').modal('show');
             })
 
             $('.classSectionAdd').on('click', function(){

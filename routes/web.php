@@ -23,6 +23,8 @@ Route::get('/student/class', [StudentClassController::class, 'student_class']);
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('/student-class-post', [StudentClassController::class, 'student_class_post']);
 Route::post('/student-class-delete-by-id', [StudentClassController::class, 'student_class_delete_by_id']);
+Route::post('/student-class-detail-by-id', [StudentClassController::class, 'student_class_detail_by_id']);
+Route::post('/student-class-update-by-id', [StudentClassController::class, 'student_class_update_by_id']);
 Route::get('/student-class-lists', [StudentClassController::class, 'student_class_lists']);
 });
 

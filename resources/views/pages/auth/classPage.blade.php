@@ -5,4 +5,5 @@
    @include('components.auth.classComponent')
    @include('components.auth.footerComponent')
    @include('components.auth.classCreateComponent')
+   @include('components.auth.classEditComponent')
 @endsection
