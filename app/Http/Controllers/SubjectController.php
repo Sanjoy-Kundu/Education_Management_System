@@ -89,5 +89,38 @@ class SubjectController extends Controller
             return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
         }
     }
+
+
+    public function subject_update_by_id(Request $request)
+    {
+        try{
+            $request->validate([
+                'student_class_id' => 'required',
+                'name' => 'required|max:255',
+                'code' => 'required|max:255',
+                'full_marks' => 'required|integer',
+            ]);
+
+            $data_check = Subject::where('code', $request->input('code'))->where('student_class_id', $request->input('student_class_id'))->where('name',$request->input('name'))->where('full_marks',$request->input('full_marks'))->first();
+            if($data_check){
+                return response()->json(['status' => 'errors', 'message' => 'Input Field Already Exists']);
+            }
+    
+            $subject = Subject::find($request->id);
+            if (!$subject) {
+                return response()->json(['status' => 'error', 'message' => 'Subject not found'], 404);
+            }
+            $subject->update([
+                'user_id' => Auth::id(),
+                'name' => Str::upper($request->input('name')),
+                'code' => Str::upper($request->input('code')),
+                'student_class_id' => $request->input('student_class_id'),
+                'full_marks' => $request->input('full_marks')
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Subject Updated Successfully']);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+        }
+    }
     
 }
