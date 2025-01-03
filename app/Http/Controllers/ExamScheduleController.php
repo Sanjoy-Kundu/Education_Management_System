@@ -47,6 +47,12 @@ class ExamScheduleController extends Controller
                 'end_time' => 'required|date_format:H:i|after:start_time',
             ]);
 
+            $ExamSheduleDataCheck = ExamSchedule::where('subject_id', $request->subject_id)->where('student_class_id', $request->student_class_id)->where('exam_date', $request->exam_date)->where('start_time', $request->start_time)->where('end_time', $request->end_time)->first();
+
+            if($ExamSheduleDataCheck){
+                return response()->json(['status' => 'error', 'message' => 'Exam Schedule already exists']);
+            }
+
 
             ExamSchedule::create([
                 'user_id'=> Auth::id(),
@@ -64,20 +70,40 @@ class ExamScheduleController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+
+    public function exam_schedule_delete_by_id(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'id' => 'required|exists:exam_schedules,id',
+            ]);
+            $checkDelete = ExamSchedule::where('id', $request->id)->first();
+            if(!$checkDelete){
+                return response()->json(['status' => 'error', 'message' => 'Exam Schedule not found']);
+            }
+            
+            ExamSchedule::where('id', $request->id)->delete();
+            return response()->json(['status' => 'success', 'message' => 'Exam Schedule deleted successfully']);
+        }
+        catch(Exception $e){
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ExamSchedule $examSchedule)
+
+    public function exam_shedule_detail_by_id(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'id' => 'required|exists:exam_schedules,id',
+            ]);
+            $exam_schedule = ExamSchedule::where('id', $request->id)->with('subject', 'studentClass')->first();
+            return response()->json(['status' => 'success', 'exam_schedule' => $exam_schedule]);
+        }
+        catch(Exception $e){
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
     /**

@@ -41,7 +41,6 @@
         let token = localStorage.getItem('authToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            console.log(token)
         } else {
             console.error('No auth token found');
         }
@@ -74,7 +73,6 @@
                     </tr>`;
                     listSectionBody.append(row);
                 });
-
 
 
 
@@ -127,14 +125,10 @@
                 });
 
 
-
-                
             $('.subjectEdit').on('click',async function(){
                 let id = $(this).data('id')
                 await subjectEditShow(id);
                 $('#subjectEditModal').modal('show');
-                // await classEditModalShow(id);
-                // $('#classEditModal').modal('show');
             })
 
 

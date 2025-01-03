@@ -6,42 +6,42 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="subjectForm">
+        <form id="examSheduleForm">
           <div class="mb-3">
             <label for="select-class-lists" class="form-label">Select Your Class</label>
             <select class="form-select" id="select-class-lists" name="student_class_id">
             </select>
-            <div id="class_name_error" class="text-danger"></div>
+            <div id="shedule_class_name_error" class="text-danger"></div>
           </div>
 
           <div class="mb-3">
             <label for="select-class-lists" class="form-label">Select Your Subject</label>
             <select class="form-select" id="select-subject-lists" name="subject_id">
             </select>
-            <div id="subject_name_error" class="text-danger"></div>
+            <div id="shedule_subject_name_error" class="text-danger"></div>
           </div>
 
 
           <div class="mb-3">
             <label for="suject_name" class="form-label">Exam Name</label>
             <input type="text" class="form-control" id="exam_name" placeholder="Enter Your Exam Name" name="name">
-            <div id="subject_name_error" class="text-danger"></div>
+            <div id="shedule_exam_name_error" class="text-danger"></div>
           </div>
           <div class="mb-3">
             <label for="subject_code" class="form-label">Exam Date</label>
-            <input type="date" class="form-control" id="subject_code" name="exam_date">
-            <div id="exam_date_error" class="text-danger"></div>
+            <input type="date" class="form-control" id="exam_date" name="exam_date">
+            <div id="shedule_exam_date_error" class="text-danger"></div>
           </div>
           <div class="mb-3">
             <label for="subject_fullmarks" class="form-label">Exam Starting Time</label>
             <input type="time" class="form-control" id="starting_time" placeholder="Enter Full Marks" name="start_time">
-            <div id="start_time_error" class="text-danger"></div>
+            <div id="shedule_start_time_error" class="text-danger"></div>
           </div>
 
           <div class="mb-3">
             <label for="subject_fullmarks" class="form-label">Exam Ending Time</label>
             <input type="time" class="form-control" id="ending_time" placeholder="Enter Full Marks" name="end_time">
-            <div id="end_time_error" class="text-danger"></div>
+            <div id="shedule_end_time_error" class="text-danger"></div>
           </div>
 
         </form>
@@ -56,8 +56,8 @@
 
 <script>
   // Fetch class lists
-  getClassSelectLists();
-  async function getClassSelectLists() {
+  ClassSelectLists();
+  async function ClassSelectLists() {
     try {
       let res = await axios.get('/student-class-lists');
       let lists = res.data.classLists;
@@ -96,93 +96,87 @@
   }
 
 
-  // async function uploadExam(event) {
-  //   event.preventDefault();
-  //   // Clear previous error messages
-  //   document.getElementById("subject_name_error").innerText = "";
-  //   document.getElementById("subject_code_error").innerText = "";
-  //   document.getElementById("subject_fullmarks_error").innerText = "";
-  //   document.getElementById("class_name_error").innerText = "";
+  
+  async function uploadExam(event){
+    event.preventDefault();
+    document.getElementById('shedule_class_name_error').innerText = '';
+    document.getElementById('shedule_subject_name_error').innerText = '';
+    document.getElementById('shedule_exam_name_error').innerText = '';
+    document.getElementById('shedule_exam_date_error').innerText = '';
+    document.getElementById('shedule_start_time_error').innerText = '';
+    document.getElementById('shedule_end_time_error').innerText = '';
+      
+    let student_class_id = document.getElementById('select-class-lists').value;
+    let subject_id = document.getElementById('select-subject-lists').value;
+    let name = document.getElementById('exam_name').value;
+    let exam_date = document.getElementById('exam_date').value;
+    let start_time = document.getElementById('starting_time').value;
+    let end_time = document.getElementById('ending_time').value;
+    let isError = false;
 
-  //   let name = document.getElementById('suject_name').value.trim();
-  //   let code = document.getElementById('subject_code').value.trim();
-  //   let full_marks = document.getElementById('subject_fullmarks').value.trim();
-  //   let student_class_id = document.getElementById('select-class-lists').value;
 
-  //   let isError = false;
+    if(!student_class_id){
+      document.getElementById('shedule_class_name_error').innerText = 'Please select a class';
+      isError = true;
+    }
+    if(!subject_id){
+      document.getElementById('shedule_subject_name_error').innerText = 'Please select a subject';
+      isError = true;
+    }
+    if(!name){
+      document.getElementById('shedule_exam_name_error').innerText = 'Please enter exam name';
+      isError = true;
+    }
+    if(!exam_date){
+      document.getElementById('shedule_exam_date_error').innerText = 'Please enter exam date';
+      isError = true;
+    }
+    if(!start_time){
+      document.getElementById('shedule_start_time_error').innerText = 'Please enter exam starting time';
+      isError = true;
+    }
+    if(!end_time){
+      document.getElementById('shedule_end_time_error').innerText = 'Please enter exam ending time';
+      isError = true;
+    }
+    if(isError) return
 
-  //   // Validation
-  //   if (!name) {
-  //     document.getElementById("subject_name_error").innerText = "Input field is required";
-  //     isError = true;
-  //   }
+    let data = {
+      student_class_id: student_class_id,
+      subject_id: subject_id,
+      name: name,
+      exam_date: exam_date,
+      start_time: start_time,
+      end_time: end_time
+    }
+    console.log(data);
 
-  //   if (!code) {
-  //     document.getElementById("subject_code_error").innerText = "Input field is required";
-  //     isError = true;
-  //   }
-
-  //   if (!full_marks) {
-  //     document.getElementById("subject_fullmarks_error").innerText = "Input field is required";
-  //     isError = true;
-  //   }
-
-  //   if (!student_class_id) {
-  //     document.getElementById("class_name_error").innerText = "Please choose a class";
-  //     isError = true;
-  //   }
-
-  //   if (isError) return;
-
-  //   let data = {
-  //     name: name,
-  //     code: code,
-  //     full_marks: full_marks,
-  //     student_class_id: student_class_id,
-  //   };
-
-  //   try {
-  //     let token = localStorage.getItem('authToken');
-  //     if (!token) {
-  //       console.error('No auth token found');
-  //       return;
-  //     }
-  //     let res = await axios.post('/subject-post', data, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (res.data.status === 'success') {
-  //       await getClassSelectLists();
-  //       await getSubjectListsShow();
-  //       Swal.fire({
-  //         title: "Created!",
-  //         text: res.data.message,
-  //         icon: "success",
-  //         timer: 3000,
-  //       });
-
-  //       // Clear form fields after success
-  //       document.getElementById('suject_name').value = '';
-  //       document.getElementById('subject_code').value = '';
-  //       document.getElementById('subject_fullmarks').value = '';
-  //       document.getElementById('select-class-lists').value = '';
-
-  //       // Optionally, close the modal
-  //       $('#subjectModal').modal('hide');
-  //     } else{
-  //         document.getElementById("subject_code_error").innerText = res.data.message
-  //     }
-  //   } catch (error) {
-  //     console.error("Error posting subject:", error);
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "There was an error saving the subject.",
-  //     });
-  //   }
-  // }
+    try{
+      let res = await axios.post('/exam-schedule-post', data);
+      if(res.data.status === 'success'){
+        await getExamSheduleListsShow();
+        $('#examSheduleModal').modal('hide');
+        Swal.fire({
+          title: 'Success!',
+          text: res.data.message,
+          icon: 'success',
+          timer: 3000
+        });
+        document.getElementById('examSheduleForm').reset();
+      }else{
+        document.getElementById('shedule_class_name_error').innerText = res.data.message;
+        document.getElementById('shedule_subject_name_error').innerText = res.data.message;
+        document.getElementById('shedule_exam_name_error').innerText = res.data.message;
+        document.getElementById('shedule_exam_date_error').innerText = res.data.message;
+        document.getElementById('shedule_start_time_error').innerText = res.data.message;
+        document.getElementById('shedule_end_time_error').innerText = res.data.message;
+        
+      }
+    }catch(error){
+      console.error('Error uploading exam:', error);
+    }
+    
+  }
+  
 
 </script>

@@ -45,6 +45,8 @@ Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_
 //exam schedule routes
  Route::get('/exam-schedule-lists', [ExamScheduleController::class, 'exam_schedule_lists']);
  Route::post('/exam-schedule-post', [ExamScheduleController::class, 'exam_schedule_post']);
+ Route::post('/exam-schedule-delete-by-id', [ExamScheduleController::class, 'exam_schedule_delete_by_id']);
+ Route::post('/exam-shedule-detail-by-id', [ExamScheduleController::class, 'exam_shedule_detail_by_id']);
 });
 
 
