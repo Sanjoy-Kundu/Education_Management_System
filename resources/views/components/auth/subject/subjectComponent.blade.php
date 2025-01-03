@@ -127,6 +127,17 @@
                 });
 
 
+
+                
+            $('.subjectEdit').on('click',async function(){
+                let id = $(this).data('id')
+                await subjectEditShow(id);
+                $('#subjectEditModal').modal('show');
+                // await classEditModalShow(id);
+                // $('#classEditModal').modal('show');
+            })
+
+
             } catch (error) {
                 console.error('Error fetching class lists:', error);
             }

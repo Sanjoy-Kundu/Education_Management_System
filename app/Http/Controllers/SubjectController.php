@@ -72,5 +72,22 @@ class SubjectController extends Controller
             return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
         }
     }
+
+
+    public function subject_detail_by_id(Request $request)
+    {
+        try{
+            $sbuject_id = $request->id;
+            $subject = Subject::where('id', $sbuject_id)->first();
+            if ($subject) {
+                return response()->json(['status' => 'success', 'subject' => $subject]);
+            }else{
+                return response()->json(['status' => 'fail', 'message' => 'invalid data']);
+            }
+            
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+        }
+    }
     
 }

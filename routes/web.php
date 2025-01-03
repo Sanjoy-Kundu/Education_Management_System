@@ -33,6 +33,7 @@ Route::post('/student-class-update-by-id', [StudentClassController::class, 'stud
 Route::get('/subject-lists', [SubjectController::class, 'all_subject_lists']);
 Route::post('/subject-post', [SubjectController::class, 'subject_create']);
 Route::post('/subject-delete-by-id', [SubjectController::class, 'subject_delete_by_id']);
+Route::post('/subject-detail-by-id', [SubjectController::class, 'subject_detail_by_id']);
 });
 
 
