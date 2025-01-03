@@ -11,7 +11,7 @@
                         <h5 class="card-header">Class Lists</h5>
                         <div class="card-body">
                             <button class="btn btn-primary w-25" data-bs-toggle="modal"
-                                data-bs-target="#subjectModal">ADD CLASS</button><br><br>
+                                data-bs-target="#subjectModal">ADD SUBJECT</button><br><br>
 
                             <table class="table table-bordered">
                                 <thead>

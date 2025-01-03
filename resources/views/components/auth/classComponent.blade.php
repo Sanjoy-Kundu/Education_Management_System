@@ -10,8 +10,7 @@
                     <div class="card">
                         <h5 class="card-header">Class Lists</h5>
                         <div class="card-body">
-                            <button class="btn btn-primary w-25" data-bs-toggle="modal" data-bs-target="#exampleModal">ADD CLASS</button><br><br>
-
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">ADD CLASS</button><br><br>
                             <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -46,9 +45,9 @@
         getClassLists();
         async function getClassLists() {
             try {
+
                 let res = await axios.get('/student-class-lists');
                 let lists = res.data.classLists;
-                console.log(lists.length);
                 let listTableBody = $('#lists-table-body')
                 listTableBody.empty(); //clear previous data
                 lists.forEach((element,index) => {
