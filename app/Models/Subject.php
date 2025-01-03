@@ -22,4 +22,9 @@ class Subject extends Model
     {
         return $this->belongsTo(StudentClass::class, 'student_class_id');
     }
+
+    public function examSchedules()
+    {
+        return $this->hasMany(ExamSchedule::class);
+    }
 }

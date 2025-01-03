@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\StudentClassController;
 
 
@@ -16,8 +17,9 @@ Route::post("/user-login", [UserController::class, "userLogin"]);
 
 
 Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
-Route::get('/student/class', [StudentClassController::class, 'student_class']);
+Route::get('/class/lists', [StudentClassController::class, 'student_class']);
 Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
+Route::get('/exam/schedule/lists', [ExamScheduleController::class, 'exam_schedule_lists_page']);
 
 
 
@@ -41,8 +43,8 @@ Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_
 
 
 //exam schedule routes
-// Route::get('/exam-schedule-lists', [ExamScheduleController::class, 'exam_schedule_lists']);
-// Route::post('/exam-schedule-post', [ExamScheduleController::class, 'exam_schedule_post']);
+ Route::get('/exam-schedule-lists', [ExamScheduleController::class, 'exam_schedule_lists']);
+ Route::post('/exam-schedule-post', [ExamScheduleController::class, 'exam_schedule_post']);
 });
 
 

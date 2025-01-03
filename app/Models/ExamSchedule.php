@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Subject;
+use App\Models\StudentClass;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ExamSchedule extends Model
 {
@@ -17,4 +19,14 @@ class ExamSchedule extends Model
         'start_time',
         'end_time'
     ];
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+    public function studentClass()
+    {
+        return $this->belongsTo(StudentClass::class);
+    }
+    
 }
