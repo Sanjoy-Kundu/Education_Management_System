@@ -24,7 +24,6 @@ class StudentClassController extends Controller
         
         $request->validate([
             'name' => 'required|max:255|unique:student_classes,name',
-            'section' => 'required',
             'capacity' => 'required|integer',
         ]);
 

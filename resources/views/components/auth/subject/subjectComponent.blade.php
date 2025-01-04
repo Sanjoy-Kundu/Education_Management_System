@@ -19,8 +19,7 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Class</th>
                                         <th scope="col">Subject Name</th>
-                                        <th scope="col">Suject Code</th>
-                                        <th scope="col">Full Marks</th>
+                                        <th scope="col">Sub Subject</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -62,8 +61,12 @@
                         <td>${index+1}</td>
                         <td>${element.student_class.name}</td>
                         <td>${element.name}</td>
-                        <td>${element.code}</td>
-                        <td>${element.full_marks}</td>
+                        <td>
+                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <button type="button" class="btn btn-primary text-white subjectSubjectCreate" data-id="${element.id}">Sub Subject Create</button>
+                                <button type="button" class="btn btn-success subSubjectView" data-id="${element.id}">View</button>
+                            </div>
+                        </td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                 <button type="button" class="btn btn-danger subjectDelete" data-id="${element.id}">DELETE</button>
@@ -129,6 +132,13 @@
                 let id = $(this).data('id')
                 await subjectEditShow(id);
                 $('#subjectEditModal').modal('show');
+            })
+
+
+            $('.subjectSubjectCreate').on('click',async function(){
+                let id = $(this).data('id')
+                await subSubjectCreateShow(id);
+                $('#sbuSubjectCreateModal').modal('show');
             })
 
 

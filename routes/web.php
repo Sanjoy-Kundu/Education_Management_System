@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SubSubjectController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\StudentClassController;
 
@@ -39,6 +40,8 @@ Route::post('/subject-delete-by-id', [SubjectController::class, 'subject_delete_
 Route::post('/subject-detail-by-id', [SubjectController::class, 'subject_detail_by_id']);
 Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_by_id']);
 
+//sub subject routes
+Route::post('/sub-subject-create', [SubSubjectController::class, 'sub_subject_create']);
 
 
 
@@ -47,6 +50,7 @@ Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_
  Route::post('/exam-schedule-post', [ExamScheduleController::class, 'exam_schedule_post']);
  Route::post('/exam-schedule-delete-by-id', [ExamScheduleController::class, 'exam_schedule_delete_by_id']);
  Route::post('/exam-shedule-detail-by-id', [ExamScheduleController::class, 'exam_shedule_detail_by_id']);
+ 
 });
 
 

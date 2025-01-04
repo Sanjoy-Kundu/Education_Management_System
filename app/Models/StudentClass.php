@@ -12,11 +12,22 @@ class StudentClass extends Model
     use HasFactory;
     protected $fillable = ['user_id','name','section','capacity'];
 
+
+    protected $attributes = [
+        'section' => null,
+        'capacity' => 0,
+    ];
+
+
+
+
+
     public function subjects()
     {
         return $this->hasMany(Subject::class, 'student_class_id');
     }
     
+
     public function examSchedules()
     {
         return $this->hasMany(ExamSchedule::class);

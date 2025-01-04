@@ -19,16 +19,6 @@
             <input type="text" class="form-control" id="suject_name" placeholder="Enter Subject Name" name="name">
             <div id="subject_name_error" class="text-danger"></div>
           </div>
-          <div class="mb-3">
-            <label for="subject_code" class="form-label">Subject Code</label>
-            <input type="text" class="form-control" id="subject_code" placeholder="example: cse-101" name="code">
-            <div id="subject_code_error" class="text-danger"></div>
-          </div>
-          <div class="mb-3">
-            <label for="subject_fullmarks" class="form-label">Full Marks</label>
-            <input type="number" class="form-control" id="subject_fullmarks" placeholder="Enter Full Marks" name="full_marks">
-            <div id="subject_fullmarks_error" class="text-danger"></div>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -69,13 +59,9 @@
 
     // Clear previous error messages
     document.getElementById("subject_name_error").innerText = "";
-    document.getElementById("subject_code_error").innerText = "";
-    document.getElementById("subject_fullmarks_error").innerText = "";
     document.getElementById("class_name_error").innerText = "";
 
     let name = document.getElementById('suject_name').value.trim();
-    let code = document.getElementById('subject_code').value.trim();
-    let full_marks = document.getElementById('subject_fullmarks').value.trim();
     let student_class_id = document.getElementById('select-class-lists').value;
 
     let isError = false;
@@ -83,16 +69,6 @@
     // Validation
     if (!name) {
       document.getElementById("subject_name_error").innerText = "Input field is required";
-      isError = true;
-    }
-
-    if (!code) {
-      document.getElementById("subject_code_error").innerText = "Input field is required";
-      isError = true;
-    }
-
-    if (!full_marks) {
-      document.getElementById("subject_fullmarks_error").innerText = "Input field is required";
       isError = true;
     }
 
@@ -105,8 +81,6 @@
 
     let data = {
       name: name,
-      code: code,
-      full_marks: full_marks,
       student_class_id: student_class_id,
     };
 
@@ -135,14 +109,12 @@
 
         // Clear form fields after success
         document.getElementById('suject_name').value = '';
-        document.getElementById('subject_code').value = '';
-        document.getElementById('subject_fullmarks').value = '';
         document.getElementById('select-class-lists').value = '';
 
         // Optionally, close the modal
         $('#subjectModal').modal('hide');
       } else{
-          document.getElementById("subject_code_error").innerText = res.data.message
+          document.getElementById("subject_name_error").innerText = res.data.message
       }
     } catch (error) {
       console.error("Error posting subject:", error);

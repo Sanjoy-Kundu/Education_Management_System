@@ -13,8 +13,6 @@ class Subject extends Model
         'user_id',
         'student_class_id',
         'name',
-        'code',
-        'full_marks'
     ];
 
     //first do it then suject classmodel

@@ -50,12 +50,18 @@
                 let lists = res.data.classLists;
                 let listTableBody = $('#lists-table-body')
                 listTableBody.empty(); //clear previous data
+
+                if (lists.length === 0) {
+                    listTableBody.append('<tr><td colspan="5" class="text-center text-primary">No data found</td></tr>')
+                }
+
                 lists.forEach((element,index) => {
+                    console.log(element)
                     let tr = `
                               <tr>
                                 <th scope="row">${index+1}</th>
                                 <td>${element.name}</td>
-                                <td>${element.section}</td>
+                                <td>${element.section === ''? "NULL" : element.section}</td>
                                 <td>${element.capacity}</td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic mixed styles example">
@@ -122,5 +128,5 @@
 
 
         }
-        </script>
+     </script>
         

@@ -6,4 +6,5 @@
    @include('components.auth.footerComponent')
    @include('components.auth.subject.subjectCreateComponent')
    @include('components.auth.subject.subjectEditComponent')
+   @include('components.auth.subject.subSubject.subSubjectCreateComponent')
 @endsection

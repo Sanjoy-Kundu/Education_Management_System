@@ -50,8 +50,8 @@
 
 
         getExamSheduleListsShow();
-        async function getExamSheduleListsShow(){
-            try{
+        async function getExamSheduleListsShow() {
+            try {
                 let res = await axios.get('/exam-schedule-lists');
                 let lists = res.data.exam_schedules;
                 let listSectionBody = $('#examshedule-table-body');
@@ -60,7 +60,7 @@
                     listSectionBody.append(
                         '<tr align="center"><td colspan="9" class="text-primary">No data found</td></tr>');
                 }
-                lists.forEach((element,index) => {
+                lists.forEach((element, index) => {
                     let row = `
                                     <tr>
                                         <td>${index+1}</td>
@@ -83,8 +83,8 @@
                 });
 
                 $('.examSheduleDelete').on('click', function() {
-                    let id = $(this).data('id'); 
-                    console.log('Deleting exam with id:', id); 
+                    let id = $(this).data('id');
+                    console.log('Deleting exam with id:', id);
 
                     Swal.fire({
                         title: "Are you sure?",
@@ -101,9 +101,9 @@
                                 let res = await axios.post('/exam-schedule-delete-by-id', {
                                     id: id
                                 });
-                                
+
                                 if (res.data.status === 'success') {
-                                    await getExamSheduleListsShow(); 
+                                    await getExamSheduleListsShow();
                                     Swal.fire({
                                         title: "Deleted!",
                                         text: res.data.message,
@@ -128,14 +128,14 @@
                         }
                     });
                 });
-   
-                $('.examSheduleEdit').on('click',async function(){
+
+                $('.examSheduleEdit').on('click', async function() {
                     let id = $(this).data('id')
-                     await examSheduleEditShow(id);
+                    await examSheduleEditShow(id);
                     $('#examSheduleUpdateModal').modal('show');
                 })
 
-            }catch(error){
+            } catch (error) {
                 console.error('Error fetching exam lists:', error);
             }
         }

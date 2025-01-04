@@ -50,10 +50,6 @@
             isError = true
         }
 
-        if(!section){
-            document.getElementById('class_section_error').innerText = "Section Field is required";
-            isError = true
-        }
 
         if(!capacity){
             document.getElementById('class_capacity_error').innerText = "Capacity Field is required";
