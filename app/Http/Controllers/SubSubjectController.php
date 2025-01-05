@@ -40,4 +40,15 @@ class SubSubjectController extends Controller
             return response()->json(['status' => 'errors', 'message' => $ex->getMessage()]);
         }
     }
+
+
+    public function sub_subject_view_lists(Request $request)
+    {
+        try{
+            $sub_subjects = SubSubject::where('subject_id',$request->subject_id)->get();
+            return response()->json(['status' => 'success', 'data' => $sub_subjects]);
+        } catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message' => $ex->getMessage()]);
+        }
+    }
 }

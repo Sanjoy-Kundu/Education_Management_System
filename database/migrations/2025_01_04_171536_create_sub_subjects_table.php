@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->foreignId('student_class_id')->constrained('student_classes')->onDelete('cascade');
             $table->string('sub_subject_name')->default('null');
             $table->string('sub_subject_code')->default('null');
             $table->string('full_marks')->default('null');

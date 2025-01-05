@@ -6,6 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <input type="text" class="form-control" id="sub_subject_view_id" name="id">
                 <table class="table table-bordered">
                     <thead>
                       <tr>
@@ -56,7 +57,15 @@
 
 
 
-<script>
 
+<script>
+    function subSubjectViewShow(id) {
+        document.getElementById('sub_subject_view_id').value = id;
+        // try{
+        //     //let res = await axios.post("/sub-subject-view-lists", {id:id})
+        // }catch(e){
+        //     console.error(e);
+        // }
+    }
 </script>
 

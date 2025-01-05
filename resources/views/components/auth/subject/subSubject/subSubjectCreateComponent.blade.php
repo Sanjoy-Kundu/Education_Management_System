@@ -18,6 +18,10 @@
                         <label for="subject_name" class="form-label">Class</label>
                         <input type="text" class="form-control" id="class_name" readonly>
                     </div>
+                    <div class="mb-3">
+                        <label for="subject_name" class="form-label">Class Id</label>
+                        <input type="text" class="form-control" id="sub_subject_student_class_id" readonly>
+                    </div>
 
                     <div class="mb-3">
                         <label for="sub_create_form_subject_name" class="form-label">Subject Name</label>
@@ -70,7 +74,9 @@
             });
             if (res.data.status === 'success') {
                 let subject = res.data.subject;
+                console.log(subject.student_class.id)
                 document.getElementById('class_name').value = subject.student_class.name;
+                document.getElementById('sub_subject_student_class_id').value = subject.student_class.id;
                 document.getElementById('sub_create_form_subject_id').value = subject.id;
                 document.getElementById('sub_create_form_subject_name').value = subject.name;
             } else {

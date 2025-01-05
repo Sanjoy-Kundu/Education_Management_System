@@ -42,6 +42,7 @@ Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_
 
 //sub subject routes
 Route::post('/sub-subject-create', [SubSubjectController::class, 'sub_subject_create']);
+Route::post("/sub-subject-view-lists", [SubSubjectController::class, "sub_subject_view_lists"]);
 
 
 

@@ -57,6 +57,7 @@
                 }
 
                 lists.forEach((element, index) => {
+                    console.log(element);
                     let row = `<tr>
                         <td>${index+1}</td>
                         <td>${element.student_class.name}</td>
@@ -143,7 +144,7 @@
 
             $('.subSubjectView').on('click',async function(){
                 let id = $(this).data('id')
-               
+                await subSubjectViewShow(id);
                 $('#subSubjectViewModal').modal('show');
             })
 

@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class SubSubject extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'subject_id', 'sub_subject_name', 'sub_subject_code', 'full_marks'];
+    protected $fillable = ['user_id', 'subject_id','student_class_id','sub_subject_name', 'sub_subject_code', 'full_marks'];
 }
