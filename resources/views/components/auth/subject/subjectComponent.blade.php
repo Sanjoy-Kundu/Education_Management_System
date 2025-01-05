@@ -141,6 +141,11 @@
                 $('#sbuSubjectCreateModal').modal('show');
             })
 
+            $('.subSubjectView').on('click',async function(){
+                let id = $(this).data('id')
+               
+                $('#subSubjectViewModal').modal('show');
+            })
 
             } catch (error) {
                 console.error('Error fetching class lists:', error);

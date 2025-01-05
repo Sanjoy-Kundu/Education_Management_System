@@ -7,4 +7,5 @@
    @include('components.auth.subject.subjectCreateComponent')
    @include('components.auth.subject.subjectEditComponent')
    @include('components.auth.subject.subSubject.subSubjectCreateComponent')
+   @include('components.auth.subject.subSubject.subSubjectViewComponent')
 @endsection

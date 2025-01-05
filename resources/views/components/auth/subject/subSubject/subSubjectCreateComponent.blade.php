@@ -24,28 +24,32 @@
                         <input type="text" class="form-control" id="sub_create_form_subject_name" readonly>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="sub_create_form_subject_id" class="form-label">Subject</label>
-                        <input type="text" class="form-control" id="sub_create_form_subject_id" readonly>
+                    <div class="mb-3 d-none">
+                        <label for="sub_create_form_subject_id" class="form-label">Subject ID</label>
+                        <input type="text" class="form-control" id="sub_create_form_subject_id" name="subject_id"
+                            readonly>
                     </div>
 
 
                     <div class="mb-3">
                         <label for="subject_name" class="form-label">Subject Paper</label>
-                        <input type="text" class="form-control" id="sub_subject_name" name="sub_subject_name" placeholder="Enter your subject name">
+                        <input type="text" class="form-control" id="sub_subject_name" name="sub_subject_name"
+                            placeholder="Enter your subject name">
                         <div id="sub_subject_name_error" class="text-danger"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="subject_name" class="form-label">Subject Code</label>
-                        <input type="text" class="form-control" id="sub_subject_code" name="sub_subject_code" placeholder="Enter your subject code">
+                        <input type="text" class="form-control" id="sub_subject_code" name="sub_subject_code"
+                            placeholder="Enter your subject code">
                         <div id="sub_subject_code_error" class="text-danger"></div>
                     </div>
 
                     <div class="mb-3">
                         <label for="subject_name" class="form-label">Full Marks</label>
-                        <input type="text" class="form-control" id="full_marks" name="full_marks">
-                        <div id="full_marks_error" class="text-danger"></div>
+                        <input type="text" class="form-control" id="full_marks" name="full_marks"
+                            placeholder="Enter your full marks">
+                        <div id="sub_subject_full_marks_error" class="text-danger"></div>
                     </div>
                 </form>
             </div>
@@ -58,25 +62,24 @@
 </div>
 
 <script>
-
-
-   async function subSubjectCreateShow(id) {
-    document.getElementById('sub_subject_id').value = id;
+    async function subSubjectCreateShow(id) {
+        document.getElementById('sub_subject_id').value = id;
         try {
-          let res = await axios.post('/subject-detail-by-id',{id:id});
-          if (res.data.status === 'success') {
-            let subject = res.data.subject;
-            console.log(res.data.subject);
-            document.getElementById('class_name').value = subject.student_class.name;
-            document.getElementById('sub_create_form_subject_id').value = subject.id;
-            document.getElementById('sub_create_form_subject_name').value = subject.name;
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: res.data.message,
+            let res = await axios.post('/subject-detail-by-id', {
+                id: id
             });
-          }
+            if (res.data.status === 'success') {
+                let subject = res.data.subject;
+                document.getElementById('class_name').value = subject.student_class.name;
+                document.getElementById('sub_create_form_subject_id').value = subject.id;
+                document.getElementById('sub_create_form_subject_name').value = subject.name;
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res.data.message,
+                });
+            }
         } catch (error) {
             console.error('Error fetching subject:', error);
         }
@@ -89,50 +92,66 @@
 
 
 
+    async function createSubSubject(event) {
+        event.preventDefault();
+        let id = document.getElementById('sub_subject_id').value;
+        let subject_id = document.getElementById('sub_create_form_subject_id').value;
+        let sub_subject_name = document.getElementById('sub_subject_name').value;
+        let sub_subject_code = document.getElementById('sub_subject_code').value;
+        let full_marks = document.getElementById('full_marks').value;
+        let isError = false;
 
-  //  async function createSubSubject(event) {
-  //       event.preventDefault();
-  //       let id = document.getElementById('sub_subject_id').value;
-  //       let subject_id = document.getElementById('sub_create_form_subject_id').value;
-  //       let sub_subject_name = document.getElementById('sub_subject_name').value;
-  //       let sub_subject_code = document.getElementById('sub_subject_code').value;
-  //       let full_marks = document.getElementById('full_marks').value;
+        // if (sub_subject_name === '') {
+        //     document.getElementById('sub_subject_name_error').innerText = 'Subject name is required';
+        //     isError = true;
+        // } else {
+        //     document.getElementById('sub_subject_name_error').innerText = '';
+        // }
 
-      
-  //       let data = {
-  //           id:id,
-  //           subject_id: subject_id,
-  //           sub_subject_name: sub_subject_name,
-  //           sub_subject_code: sub_subject_code,
-  //           full_marks: full_marks,
-  //       };
-  //       try{
-  //         let res = await axios.post('/create-sub-subject', data);
-  //         if (res.data.status === 'success') {
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "Success",
-  //             text: res.data.message,
-  //           });
-  //           document.getElementById('subjectForm').reset();
-  //           $('#sbuSubjectCreateModal').modal('hide');
-  //         } else {
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "Error",
-  //             text: res.data.message,
-  //           });
-  //         }
-  //       }catch(error){
-  //         console.error("create subject error", error)
-  //       }   
-    
-  //   }
+        if (sub_subject_code === '') {
+            document.getElementById('sub_subject_code_error').innerText = 'Subject code is required';
+            isError = true;
+        } else {
+            document.getElementById('sub_subject_code_error').innerText = '';
+        }
 
+        if (full_marks === '') {
+            document.getElementById('sub_subject_full_marks_error').innerText = 'Full marks is required';
+            isError = true;
+        } else {
+            document.getElementById('sub_subject_full_marks_error').innerText = '';
+        }
+        if (isError) {
+            return;
+        }
 
+        let data = {
+            id: id,
+            subject_id: subject_id,
+            sub_subject_name: sub_subject_name,
+            sub_subject_code: sub_subject_code,
+            full_marks: full_marks,
+        };
 
-
-
-
-
+        try {
+            let res = await axios.post('/sub-subject-create', data);
+            if (res.data.status === 'success') {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: res.data.message,
+                });
+                document.getElementById('subjectForm').reset();
+                $('#sbuSubjectCreateModal').modal('hide');
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res.data.message,
+                });
+            }
+        } catch (error) {
+            console.error("create subject error", error)
+        }
+    }
 </script>
