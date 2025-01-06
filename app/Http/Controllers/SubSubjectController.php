@@ -20,22 +20,22 @@ class SubSubjectController extends Controller
             ]);
 
         
-            $checkUnique = SubSubject::where('subject_id',$request->subject_id)->where('sub_subject_name',$request->sub_subject_name)->where('sub_subject_code',$request->sub_subject_code)->where('full_marks',$request->full_marks)->first();
+            $checkUnique = SubSubject::where('subject_id',$request->subject_id)->where('student_class_id',$request->student_class_id)->where('sub_subject_name',$request->sub_subject_name)->where('sub_subject_code',$request->sub_subject_code)->where('full_marks',$request->full_marks)->first();
 
             if($checkUnique){
                 return response()->json(['status' => 'errors', 'message' => 'Sub Subject Already Exists']);
             }
             
-
             SubSubject::create([
                 "user_id"=> Auth::id(),
                 "subject_id" => $request->subject_id,
+                "student_class_id" => $request->student_class_id,
                 "sub_subject_name"=> Str::upper($request->sub_subject_name),
                 "sub_subject_code" =>$request->sub_subject_code,
                 "full_marks"=> $request->full_marks
             ]);
-     
-         return response()->json(['status' => 'success', 'message' => 'Sub Subject Added Successfully']);
+
+            return response()->json(['status' => 'success', 'message' => 'Sub Subject Added Successfully']);
         } catch(Exception $ex){
             return response()->json(['status' => 'errors', 'message' => $ex->getMessage()]);
         }
