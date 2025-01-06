@@ -57,7 +57,6 @@
                 }
 
                 lists.forEach((element, index) => {
-                    console.log(element);
                     let row = `<tr>
                         <td>${index+1}</td>
                         <td>${element.student_class.name}</td>
