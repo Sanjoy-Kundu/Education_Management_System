@@ -54,4 +54,15 @@ class SubSubjectController extends Controller
 
 
 
+    public function sub_subject_lists_by_subject_id(Request $request)
+    {
+        try{
+            $sub_subjects = SubSubject::where('subject_id',$request->subject_id)->get();
+            return response()->json(['status' => 'success', 'sub_subjects_lists' => $sub_subjects]);
+        } catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message' => $ex->getMessage()]);
+        }
+    }
+
+
 }

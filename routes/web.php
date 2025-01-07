@@ -35,15 +35,17 @@ Route::post('/student-class-update-by-id', [StudentClassController::class, 'stud
 
 //subject routes
 Route::get('/subject-lists', [SubjectController::class, 'all_subject_lists']);
+Route::post('/subject-lists-by-class-id', [SubjectController::class, 'subject_lists_by_class_id']);
 Route::post('/subject-post', [SubjectController::class, 'subject_create']);
 Route::post('/subject-delete-by-id', [SubjectController::class, 'subject_delete_by_id']);
 Route::post('/subject-detail-by-id', [SubjectController::class, 'subject_detail_by_id']);
 Route::post('/subject-update-by-id', [SubjectController::class, 'subject_update_by_id']);
 
+
 //sub subject routes
 Route::post('/sub-subject-create', [SubSubjectController::class, 'sub_subject_create']);
 Route::post("/sub-subject-view-lists", [SubSubjectController::class, "sub_subject_view_lists"]);
-
+Route::post("/sub-subject-lists-by-subject-id", [SubSubjectController::class, "sub_subject_lists_by_subject_id"]);
 
 
 //exam schedule routes
