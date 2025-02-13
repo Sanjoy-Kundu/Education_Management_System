@@ -93,7 +93,7 @@
             listSectionBody.empty(); // Clear previous data
 
             if (lists.length === 0) {
-                let defaultOption = `<option value="" selected>No Subject Found</option>`;
+                let defaultOption = `<option value="" selected>Subject Not Found</option>`;
                 listSectionBody.append(defaultOption);
                 return;
             }
@@ -112,7 +112,7 @@
 
     $('#select-subject-lists').on('change',async function() {
         let subject_id = $(this).val();
-        console.log(subject_id);
+        //console.log(subject_id);
         try{
           let res = await axios.post('/sub-subject-lists-by-subject-id', {subject_id: subject_id});
           if(res.data.status === 'success'){

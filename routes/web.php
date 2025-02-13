@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoutineController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SubSubjectController;
@@ -20,7 +21,9 @@ Route::post("/user-login", [UserController::class, "userLogin"]);
 Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
 Route::get('/class/lists', [StudentClassController::class, 'student_class']);
 Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
+Route::get('/class/routine', [RoutineController::class, 'class_routine_lists']);
 Route::get('/exam/schedule/lists', [ExamScheduleController::class, 'exam_schedule_lists_page']);
+
 
 
 

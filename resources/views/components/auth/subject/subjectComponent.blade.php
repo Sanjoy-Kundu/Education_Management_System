@@ -151,10 +151,5 @@
                 console.error('Error fetching class lists:', error);
             }
 
-
-
-
-
-
         }
     </script>

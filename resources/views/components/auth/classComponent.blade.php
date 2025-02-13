@@ -11,7 +11,7 @@
                         <h5 class="card-header">Class Lists</h5>
                         <div class="card-body">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">ADD CLASS</button><br><br>
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="routineTable">
                                     <thead>
                                         <tr>
                                             <th scope="col">ID</th>
@@ -35,7 +35,7 @@
     </main>
 
 
-    <script>
+<script>
         let token = localStorage.getItem('authToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -74,6 +74,13 @@
                     `
                     listTableBody.append(tr)
                 });
+
+
+
+
+  
+
+
             } catch (error) {
                 console.error('Error', error);
             }
@@ -125,8 +132,6 @@
                 let id = $(this).data('id')
               
             })
-
-
         }
-     </script>
+</script>
         
