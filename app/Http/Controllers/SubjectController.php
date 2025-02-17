@@ -7,6 +7,7 @@ use App\Models\SubSubject;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class SubjectController extends Controller
 {

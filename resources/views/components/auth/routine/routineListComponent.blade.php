@@ -165,13 +165,31 @@
                         <td>${element.name}</td>
                         <td>
                         <div class="btn-group" role="group">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#routineAddModal" class="btn btn-primary routineAdd" data-id="${element.id}">ADD ROUTINE</button>
+                            <button type="button" class="btn btn-primary routineAdd" data-id="${element.id}">ADD ROUTINE</button>
                             <button type="button" class="btn btn-warning routineEdit" data-id="${element.id}">VIEW</button>
                         </div>
                         </td>
                     </tr>`;
                     routineTableBody.append(tr);
                 });
+                //data-bs-toggle="modal" data-bs-target="#routineAddModal"
+
+                $('.routineAdd').on('click', async function(){
+                    let student_class_id = $(this).data('id');
+                    await fillRoutineComponent(student_class_id)
+                    $('#routineAddModal').modal('show');
+                })
+
+
+
+
+
+
+
+
+
+
+
 
                 // Ensure DataTables is applied after table data is loaded
                 if (!$.fn.DataTable.isDataTable("#routineTable")) {
