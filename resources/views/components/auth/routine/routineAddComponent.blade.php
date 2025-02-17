@@ -60,25 +60,25 @@
 <!-- JavaScript -->
 <script>
     function fillRoutineComponent(student_class_id) {
-       document.getElementById('student_class_id').value = student_class_id;
-       getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
-   }
-   
-   document.addEventListener("DOMContentLoaded", function() {
-       const addMoreBtn = document.getElementById("addMore");
-       const routineContainer = document.getElementById("routineContainer");
-   
-       // first time data load
-       if (document.getElementById('student_class_id').value) {
-           getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
-       }
-   
-       // new routine block add
-       addMoreBtn.addEventListener("click", function() {
-           const newBlock = document.createElement("div");
-           newBlock.classList.add("routine-block", "card", "shadow-sm", "p-3", "mb-3");
-   
-           newBlock.innerHTML = `
+        document.getElementById('student_class_id').value = student_class_id;
+        getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const addMoreBtn = document.getElementById("addMore");
+        const routineContainer = document.getElementById("routineContainer");
+
+        // first time data load
+        if (document.getElementById('student_class_id').value) {
+            getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
+        }
+
+        // new routine block add
+        addMoreBtn.addEventListener("click", function() {
+            const newBlock = document.createElement("div");
+            newBlock.classList.add("routine-block", "card", "shadow-sm", "p-3", "mb-3");
+
+            newBlock.innerHTML = `
                <div class="card-body row g-3">
                    <div class="col-md-6">
                        <label class="form-label">Subject</label>
@@ -107,57 +107,69 @@
                    </div>
                </div>
            `;
-   
-           routineContainer.appendChild(newBlock);
-   
-           //new block subject load
-           const newSelect = newBlock.querySelector(".routine-subject");
-           getSubjectLists_name_by_subject_id(newSelect);
-       });
-   
-       // routine block remove
-       routineContainer.addEventListener("click", function(event) {
-           if (event.target.closest(".remove-block")) {
-               event.target.closest(".routine-block").remove();
-           }
-       });
-   });
-   
-   // Get subject list and update select options
-   async function getSubjectLists_name_by_subject_id(selectElement) {
-       try {
-           let student_class_id = document.getElementById('student_class_id').value;
-   
-           if (!student_class_id) {
-               console.error('Student Class ID is missing!');
-               return;
-           }
-   
-           let res = await axios.post('/subject-lists-by-class-name-routine', { student_class_id: student_class_id });
-           let lists = res.data.subjects;
-   
-           selectElement.innerHTML = ""; // Clear previous data
-   
-           if (lists.length === 0) {
-               selectElement.innerHTML = '<option>No Data Found</option>';
-           } else {
-               let uniqueNames = new Set();
-               lists.forEach(element => {
-                   if (!uniqueNames.has(element.name)) {
-                       uniqueNames.add(element.name);
-                       let option = document.createElement("option");
-                       option.value = element.id;
-                       option.textContent = element.name;
-                       selectElement.appendChild(option);
-                   }
-               });
-           }
-       } catch (error) {
-           console.error('Error fetching subject lists:', error);
-       }
-   }
-   </script>
-   
+
+            routineContainer.appendChild(newBlock);
+
+            //new block subject load
+            const newSelect = newBlock.querySelector(".routine-subject");
+            getSubjectLists_name_by_subject_id(newSelect);
+        });
+
+        // routine block remove
+        routineContainer.addEventListener("click", function(event) {
+            if (event.target.closest(".remove-block")) {
+                event.target.closest(".routine-block").remove();
+            }
+        });
+    });
+
+    // Get subject list and update select options
+    async function getSubjectLists_name_by_subject_id(selectElement) {
+        try {
+            let student_class_id = document.getElementById('student_class_id').value;
+
+            if (!student_class_id) {
+                console.error('Student Class ID is missing!');
+                return;
+            }
+            // initial value
+            selectElement.innerHTML = `<option value="">Choose your subject</option>`;
+
+            let res = await axios.post('/subject-lists-by-class-name-routine', {
+                student_class_id: student_class_id
+            });
+            let lists = res.data.subjects;
+
+            selectElement.innerHTML = ""; // Clear previous data
+
+            if (lists.length === 0) {
+                selectElement.innerHTML = '<option>No Data Found</option>';
+            } else {
+                selectElement.innerHTML = '';
+                //add placeholder 
+                const placeholderOption = document.createElement("option");
+                placeholderOption.value = "";
+                placeholderOption.textContent = "Choose your subject";
+                selectElement.appendChild(placeholderOption);
+
+                //opiton subject foreach
+                let uniqueNames = new Set();
+                lists.forEach(element => {
+                    if (!uniqueNames.has(element.name)) {
+                        uniqueNames.add(element.name);
+                        let option = document.createElement("option");
+                        option.value = element.id;
+                        option.textContent = element.name;
+                        selectElement.appendChild(option);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching subject lists:', error);
+        }
+    }
+</script>
+
 
 <!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
