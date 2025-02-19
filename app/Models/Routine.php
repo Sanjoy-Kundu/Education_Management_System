@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Routine extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'subject_id',
+        'sub_subject_id',
+        'day',
+        'starting_time',
+        'ending_time',
+    ];
 }
