@@ -128,5 +128,19 @@ class SubjectController extends Controller
             return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
         }
     }
+
+
+    public function subject_papers_by_subject_id(Request $request)
+    {
+        try{
+            $subject_id = $request->subject_id;
+            $subSubjects = SubSubject::where('subject_id', $subject_id)->get();
+            return response()->json(['status' => 'success', 'papers' => $subSubjects]);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=> $ex->getMessage()]);
+        }
+    }
+
+
     
 }

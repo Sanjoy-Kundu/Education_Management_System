@@ -3,24 +3,28 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="routineModalLabel">ADD YOUR CLASS ROUTINE</h1>
-                <p><input type="number" name="student_class_id" class="form-control w-50" id="student_class_id"></p>
+                <h1 class="modal-title fs-1" id="routineModalLabel"><span class="text-primary">MANAGE YOUR</span> <span class="text-danger">CLASS ROUTINE</span></h1>
+                <p><input type="number" name="student_class_id" class="form-control w-50 d-none" id="student_class_id"></p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <section id="routineContainer" class="p-2" style="width: 90%; margin:0 auto">
                     <!-- Default Routine Block -->
                     <div class="routine-block card shadow-sm p-3 mb-3">
+                        <div class="card-header">
+                            <h5>Routine Block - <span class="text-danger">1</span></h5>
+                        </div>
                         <div class="card-body row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Subject</label>
-                                <select class="form-select" aria-label="Default select example" name="subject[]"
-                                    id="routineSubjectSelect">
+                                <select class="form-select routine-subject" aria-label="Default select example" name="subject[]" id="routineSubjectSelect">
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
-                                <input type="text" class="form-control" name="subject_paper[]">
+                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="subject_paper[]" id="routineSubjectPaperSelect">
+                                    <option value="">Please Select Subject</option>
+                                </select>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Day</label>
@@ -78,16 +82,23 @@
             const newBlock = document.createElement("div");
             newBlock.classList.add("routine-block", "card", "shadow-sm", "p-3", "mb-3");
 
+            //block number 
+            const blockNumber = routineContainer.querySelectorAll(".routine-block").length + 1;
             newBlock.innerHTML = `
                <div class="card-body row g-3">
+                 <div class="card-header">
+                    <h5>Routine Block - <span class="text-danger">${blockNumber}</span></h5>
+                </div>
                    <div class="col-md-6">
                        <label class="form-label">Subject</label>
                        <select class="form-select routine-subject" name="subject[]"></select>
                    </div>
-                   <div class="col-md-6">
-                       <label class="form-label">Subject Paper</label>
-                       <select class="form-select routine-subject" name="subject_paper[]"></select>
-                   </div>
+                    <div class="col-md-6">
+                                <label class="form-label">Subject Paper</label>
+                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="subject_paper[]" id="routineSubjectPaperSelect">
+                                    <option value="">Please Select Subject</option>
+                                </select>
+                            </div>
                    <div class="col-12">
                        <label class="form-label">Day</label>
                        <input type="text" class="form-control" name="day[]">
@@ -113,6 +124,13 @@
             //new block subject load
             const newSelect = newBlock.querySelector(".routine-subject");
             getSubjectLists_name_by_subject_id(newSelect);
+
+            // Add event listener to the new subject select element
+            newSelect.addEventListener("change", function() {
+                const subjectId = this.value;
+                const subjectPaperSelect = this.closest(".routine-block").querySelector(".routine-subject-paper");
+                getSubjectPapers(subjectId, subjectPaperSelect);
+            });
         });
 
         // routine block remove
@@ -120,6 +138,14 @@
             if (event.target.closest(".remove-block")) {
                 event.target.closest(".routine-block").remove();
             }
+        });
+
+        // Add event listener to the initial subject select element
+        const initialSubjectSelect = document.querySelector("#routineSubjectSelect");
+        initialSubjectSelect.addEventListener("change", function() {
+            const subjectId = this.value;
+            const subjectPaperSelect = this.closest(".routine-block").querySelector(".routine-subject-paper");
+            getSubjectPapers(subjectId, subjectPaperSelect);
         });
     });
 
@@ -168,8 +194,45 @@
             console.error('Error fetching subject lists:', error);
         }
     }
-</script>
 
+    // Get subject papers and update select options
+    async function getSubjectPapers(subjectId, selectElement) {
+        try {
+            if (!subjectId) {
+                selectElement.innerHTML = '<option value="">Please Select Subject</option>';
+                return;
+            }
+
+            let res = await axios.post('/subject-papers-by-subject-id', {
+                subject_id: subjectId
+            });
+            let papers = res.data.papers;
+
+            selectElement.innerHTML = ""; // Clear previous data
+
+            if (papers.length === 0) {
+                selectElement.innerHTML = '<option value="">No Papers Found</option>';
+            } else {
+                selectElement.innerHTML = '';
+                //add placeholder 
+                const placeholderOption = document.createElement("option");
+                placeholderOption.value = "";
+                placeholderOption.textContent = "Choose your paper";
+                selectElement.appendChild(placeholderOption);
+
+                //opiton paper foreach
+                papers.forEach(element => {
+                    let option = document.createElement("option");
+                    option.value = element.id;
+                    option.textContent = element.sub_subject_name?element.sub_subject_name:"none";
+                    selectElement.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching subject papers:', error);
+        }
+    }
+</script>
 
 <!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
