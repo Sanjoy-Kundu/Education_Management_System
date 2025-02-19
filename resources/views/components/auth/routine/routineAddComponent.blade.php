@@ -91,7 +91,7 @@
                 </div>
                    <div class="col-md-6">
                        <label class="form-label">Subject</label>
-                       <select class="form-select routine-subject" name="subject[]"></select>
+                    <select class="form-select routine-subject" name="subject[]" onchange="getSubjectPapers(this.value, this.closest('.routine-block').querySelector('.routine-subject-paper'))"></select>
                    </div>
                     <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
@@ -211,7 +211,7 @@
             selectElement.innerHTML = ""; // Clear previous data
 
             if (papers.length === 0) {
-                selectElement.innerHTML = '<option value="">No Papers Found</option>';
+                selectElement.innerHTML = '<option value="none" selected style="color: red;">No Papers Found</option>';
             } else {
                 selectElement.innerHTML = '';
                 //add placeholder 
@@ -222,6 +222,7 @@
 
                 //opiton paper foreach
                 papers.forEach(element => {
+                    console.log(element)
                     let option = document.createElement("option");
                     option.value = element.id;
                     option.textContent = element.sub_subject_name?element.sub_subject_name:"none";
