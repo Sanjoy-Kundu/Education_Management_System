@@ -17,12 +17,12 @@
                         <div class="card-body row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Subject</label>
-                                <select class="form-select routine-subject" aria-label="Default select example" name="subject[]" id="routineSubjectSelect">
+                                <select class="form-select routine-subject" aria-label="Default select example" name="subject_id[]" id="routineSubjectSelect">
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
-                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="subject_paper[]" id="routineSubjectPaperSelect">
+                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="sub_subject_id[]" id="routineSubjectPaperSelect">
                                     <option value="">Please Select Subject</option>
                                 </select>
                             </div>
@@ -55,7 +55,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="onRoutineSubmit(event)">ADD ROUTINE</button>
             </div>
         </div>
     </div>
@@ -91,11 +91,11 @@
                 </div>
                    <div class="col-md-6">
                        <label class="form-label">Subject</label>
-                    <select class="form-select routine-subject" name="subject[]" onchange="getSubjectPapers(this.value, this.closest('.routine-block').querySelector('.routine-subject-paper'))"></select>
+                    <select class="form-select routine-subject" name="subject_id[]" onchange="getSubjectPapers(this.value, this.closest('.routine-block').querySelector('.routine-subject-paper'))"></select>
                    </div>
                     <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
-                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="subject_paper[]" id="routineSubjectPaperSelect">
+                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="sub_subject_id[]" id="routineSubjectPaperSelect">
                                     <option value="">Please Select Subject</option>
                                 </select>
                             </div>
@@ -231,6 +231,103 @@
             }
         } catch (error) {
             console.error('Error fetching subject papers:', error);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    //:::::::::::: routing section calculation :::::::::::::::
+    async function onRoutineSubmit(event) {
+        event.preventDefault();
+
+        let student_class_id = document.getElementById('student_class_id').value;
+        const routineBlocks = document.querySelectorAll('.routine-block');
+        const routines = [];
+        let hasError = false;
+
+        routineBlocks.forEach(block => {
+            const subjectId = block.querySelector('.routine-subject').value;
+            const subSubjectId = block.querySelector('.routine-subject-paper').value;
+            const day = block.querySelector('input[name="day[]"]').value;
+            const startingTime = block.querySelector('input[name="starting_time[]"]').value;
+            const endingTime = block.querySelector('input[name="ending_time[]"]').value;
+
+            // Clear previous error messages
+            block.querySelectorAll('.error-message').forEach(el => el.remove());
+
+            if (!subjectId || !subSubjectId || !day || !startingTime || !endingTime) {
+                hasError = true;
+                block.classList.add('border', 'border-danger');
+
+                if (!subjectId) {
+                    const error = document.createElement('div');
+                    error.classList.add('error-message', 'text-danger');
+                    error.textContent = 'Subject is required';
+                    block.querySelector('.routine-subject').parentElement.appendChild(error);
+                }
+
+                if (!subSubjectId) {
+                    const error = document.createElement('div');
+                    error.classList.add('error-message', 'text-danger');
+                    error.textContent = 'Subject Paper is required';
+                    block.querySelector('.routine-subject-paper').parentElement.appendChild(error);
+                }
+
+                if (!day) {
+                    const error = document.createElement('div');
+                    error.classList.add('error-message', 'text-danger');
+                    error.textContent = 'Day is required';
+                    block.querySelector('input[name="day[]"]').parentElement.appendChild(error);
+                }
+
+                if (!startingTime) {
+                    const error = document.createElement('div');
+                    error.classList.add('error-message', 'text-danger');
+                    error.textContent = 'Starting Time is required';
+                    block.querySelector('input[name="starting_time[]"]').parentElement.appendChild(error);
+                }
+
+                if (!endingTime) {
+                    const error = document.createElement('div');
+                    error.classList.add('error-message', 'text-danger');
+                    error.textContent = 'Ending Time is required';
+                    block.querySelector('input[name="ending_time[]"]').parentElement.appendChild(error);
+                }
+            } else {
+                block.classList.remove('border', 'border-danger');
+            }
+
+            routines.push({
+                subject_id: subjectId,
+                sub_subject_id: subSubjectId,
+                day: day,
+                starting_time: startingTime,
+                ending_time: endingTime
+            });
+        });
+
+        if (hasError) {
+            return;
+        }
+
+        try {
+            let res = await axios.post('/routine-create', { routines: routines, student_class_id: student_class_id });
+
+            if (res.data.status === "success") {
+                console.log(res.data);
+            } else {
+                alert('Error: ' + res.data.message);
+            }
+        } catch (error) {
+            console.error('Error creating routine:', error);
+            alert('An error occurred while creating the routine.');
         }
     }
 </script>

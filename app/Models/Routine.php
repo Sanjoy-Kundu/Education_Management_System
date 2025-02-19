@@ -9,6 +9,7 @@ class Routine extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'student_class_id',
         'subject_id',
         'sub_subject_id',
         'day',
