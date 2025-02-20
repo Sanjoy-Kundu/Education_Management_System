@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('routines', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
-            $table->foreignId('sub_subject_id')->constrained('sub_subjects')->onDelete('cascade');
+            $table->foreignId('sub_subject_id')->nullable()->constrained('sub_subjects')->onDelete('cascade');
             $table->foreignId('student_class_id')->constrained('student_classes')->onDelete('cascade');
             $table->string('day');
+            $table->date('date');
             $table->time('starting_time');
             $table->time('ending_time');
             $table->timestamps();

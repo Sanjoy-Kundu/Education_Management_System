@@ -3,8 +3,10 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-1" id="routineModalLabel"><span class="text-primary">MANAGE YOUR</span> <span class="text-danger">CLASS ROUTINE</span></h1>
-                <p><input type="number" name="student_class_id" class="form-control w-50 d-none" id="student_class_id"></p>
+                <h1 class="modal-title fs-1" id="routineModalLabel"><span class="text-primary">MANAGE YOUR</span> <span
+                        class="text-danger">CLASS ROUTINE</span></h1>
+                <p><input type="number" name="student_class_id" class="form-control w-50 d-none" id="student_class_id">
+                </p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -17,18 +19,24 @@
                         <div class="card-body row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Subject</label>
-                                <select class="form-select routine-subject" aria-label="Default select example" name="subject_id[]" id="routineSubjectSelect">
+                                <select class="form-select routine-subject" aria-label="Default select example"
+                                    name="subject_id[]" id="routineSubjectSelect">
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
-                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="sub_subject_id[]" id="routineSubjectPaperSelect">
+                                <select class="form-select routine-subject-paper" aria-label="Default select example"
+                                    name="sub_subject_id[]" id="routineSubjectPaperSelect">
                                     <option value="">Please Select Subject</option>
                                 </select>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Day</label>
                                 <input type="text" class="form-control" name="day[]">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Routine Date</label>
+                                <input type="date" class="form-control" name="date[]">
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Starting Time</label>
@@ -65,7 +73,12 @@
 <script>
     function fillRoutineComponent(student_class_id) {
         document.getElementById('student_class_id').value = student_class_id;
-        getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
+        const selectElement = document.querySelector("#routineSubjectSelect");
+        if (selectElement) {
+            getSubjectLists_name_by_subject_id(selectElement);
+        } else {
+            console.error('Select element not found!');
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -74,7 +87,12 @@
 
         // first time data load
         if (document.getElementById('student_class_id').value) {
-            getSubjectLists_name_by_subject_id(document.querySelector("#routineSubjectSelect"));
+            const selectElement = document.querySelector("#routineSubjectSelect");
+            if (selectElement) {
+                getSubjectLists_name_by_subject_id(selectElement);
+            } else {
+                console.error('Select element not found!');
+            }
         }
 
         // new routine block add
@@ -85,50 +103,59 @@
             //block number 
             const blockNumber = routineContainer.querySelectorAll(".routine-block").length + 1;
             newBlock.innerHTML = `
-               <div class="card-body row g-3">
-                 <div class="card-header">
-                    <h5>Routine Block - <span class="text-danger">${blockNumber}</span></h5>
-                </div>
-                   <div class="col-md-6">
-                       <label class="form-label">Subject</label>
-                    <select class="form-select routine-subject" name="subject_id[]" onchange="getSubjectPapers(this.value, this.closest('.routine-block').querySelector('.routine-subject-paper'))"></select>
-                   </div>
-                    <div class="col-md-6">
-                                <label class="form-label">Subject Paper</label>
-                                <select class="form-select routine-subject-paper" aria-label="Default select example" name="sub_subject_id[]" id="routineSubjectPaperSelect">
-                                    <option value="">Please Select Subject</option>
-                                </select>
-                            </div>
-                   <div class="col-12">
-                       <label class="form-label">Day</label>
-                       <input type="text" class="form-control" name="day[]">
-                   </div>
-                   <div class="col-6">
-                       <label class="form-label">Starting Time</label>
-                       <input type="time" class="form-control" name="starting_time[]">
-                   </div>
-                   <div class="col-6">
-                       <label class="form-label">Ending Time</label>
-                       <input type="time" class="form-control" name="ending_time[]">
-                   </div>
-                   <div class="col-12 text-end">
-                       <button type="button" class="btn btn-danger remove-block">
-                           <i class="bi bi-trash"></i> Remove
-                       </button>
-                   </div>
+           <div class="card-body row g-3">
+             <div class="card-header">
+                <h5>Routine Block - <span class="text-danger">${blockNumber}</span></h5>
+            </div>
+               <div class="col-md-6">
+                   <label class="form-label">Subject</label>
+                <select class="form-select routine-subject" name="subject_id[]" onchange="getSubjectPapers(this.value, this.closest('.routine-block').querySelector('.routine-subject-paper'))"></select>
                </div>
-           `;
+                <div class="col-md-6">
+                            <label class="form-label">Subject Paper</label>
+                            <select class="form-select routine-subject-paper" aria-label="Default select example" name="sub_subject_id[]" id="routineSubjectPaperSelect">
+                                <option value="">Please Select Subject</option>
+                            </select>
+                        </div>
+               <div class="col-12">
+                   <label class="form-label">Day</label>
+                   <input type="text" class="form-control" name="day[]">
+               </div>
+               <div class="col-12">
+                   <label class="form-label">Routine Date</label>
+                   <input type="date" class="form-control" name="date[]">
+               </div>
+               <div class="col-6">
+                   <label class="form-label">Starting Time</label>
+                   <input type="time" class="form-control" name="starting_time[]">
+               </div>
+               <div class="col-6">
+                   <label class="form-label">Ending Time</label>
+                   <input type="time" class="form-control" name="ending_time[]">
+               </div>
+               <div class="col-12 text-end">
+                   <button type="button" class="btn btn-danger remove-block">
+                       <i class="bi bi-trash"></i> Remove
+                   </button>
+               </div>
+           </div>
+       `;
 
             routineContainer.appendChild(newBlock);
 
             //new block subject load
             const newSelect = newBlock.querySelector(".routine-subject");
-            getSubjectLists_name_by_subject_id(newSelect);
+            if (newSelect) {
+                getSubjectLists_name_by_subject_id(newSelect);
+            } else {
+                console.error('New select element not found!');
+            }
 
             // Add event listener to the new subject select element
             newSelect.addEventListener("change", function() {
                 const subjectId = this.value;
-                const subjectPaperSelect = this.closest(".routine-block").querySelector(".routine-subject-paper");
+                const subjectPaperSelect = this.closest(".routine-block").querySelector(
+                    ".routine-subject-paper");
                 getSubjectPapers(subjectId, subjectPaperSelect);
             });
         });
@@ -142,11 +169,16 @@
 
         // Add event listener to the initial subject select element
         const initialSubjectSelect = document.querySelector("#routineSubjectSelect");
-        initialSubjectSelect.addEventListener("change", function() {
-            const subjectId = this.value;
-            const subjectPaperSelect = this.closest(".routine-block").querySelector(".routine-subject-paper");
-            getSubjectPapers(subjectId, subjectPaperSelect);
-        });
+        if (initialSubjectSelect) {
+            initialSubjectSelect.addEventListener("change", function() {
+                const subjectId = this.value;
+                const subjectPaperSelect = this.closest(".routine-block").querySelector(
+                    ".routine-subject-paper");
+                getSubjectPapers(subjectId, subjectPaperSelect);
+            });
+        } else {
+            console.error('Initial select element not found!');
+        }
     });
 
     // Get subject list and update select options
@@ -211,125 +243,167 @@
             selectElement.innerHTML = ""; // Clear previous data
 
             if (papers.length === 0) {
+                // If no papers found, set value to "none"
                 selectElement.innerHTML = '<option value="none" selected style="color: red;">No Papers Found</option>';
             } else {
                 selectElement.innerHTML = '';
-                //add placeholder 
                 const placeholderOption = document.createElement("option");
                 placeholderOption.value = "";
                 placeholderOption.textContent = "Choose your paper";
                 selectElement.appendChild(placeholderOption);
 
-                //opiton paper foreach
+                // Add papers to the select element
                 papers.forEach(element => {
-                    console.log(element)
-                    let option = document.createElement("option");
-                    option.value = element.id;
-                    option.textContent = element.sub_subject_name?element.sub_subject_name:"none";
-                    selectElement.appendChild(option);
-                });
+                let option = document.createElement("option");
+                option.value = element.id;
+                option.textContent = element.sub_subject_name ? element.sub_subject_name : "none";
+                selectElement.appendChild(option);
+            });
             }
         } catch (error) {
             console.error('Error fetching subject papers:', error);
         }
     }
 
-
-
-
-
-
-
-
-
-
     //:::::::::::: routing section calculation :::::::::::::::
     async function onRoutineSubmit(event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        let student_class_id = document.getElementById('student_class_id').value;
-        const routineBlocks = document.querySelectorAll('.routine-block');
-        const routines = [];
-        let hasError = false;
+    let student_class_id = document.getElementById('student_class_id').value;
+    const routineBlocks = document.querySelectorAll('.routine-block');
+    const routines = [];
+    let hasError = false;
 
-        routineBlocks.forEach(block => {
-            const subjectId = block.querySelector('.routine-subject').value;
-            const subSubjectId = block.querySelector('.routine-subject-paper').value;
-            const day = block.querySelector('input[name="day[]"]').value;
-            const startingTime = block.querySelector('input[name="starting_time[]"]').value;
-            const endingTime = block.querySelector('input[name="ending_time[]"]').value;
+    routineBlocks.forEach(block => {
+        const subjectId = block.querySelector('.routine-subject').value;
+        let subSubjectId = block.querySelector('.routine-subject-paper').value;
 
-            // Clear previous error messages
-            block.querySelectorAll('.error-message').forEach(el => el.remove());
+        if (subSubjectId === "none") {
+            subSubjectId = null; // যদি "none" থাকে, তাহলে সেটাকে NULL হিসেবে ধরবো
+        }
 
-            if (!subjectId || !subSubjectId || !day || !startingTime || !endingTime) {
-                hasError = true;
-                block.classList.add('border', 'border-danger');
+        const day = block.querySelector('input[name="day[]"]').value;
+        const date = block.querySelector('input[name="date[]"]').value;
+        const startingTime = block.querySelector('input[name="starting_time[]"]').value;
+        const endingTime = block.querySelector('input[name="ending_time[]"]').value;
 
-                if (!subjectId) {
-                    const error = document.createElement('div');
-                    error.classList.add('error-message', 'text-danger');
-                    error.textContent = 'Subject is required';
-                    block.querySelector('.routine-subject').parentElement.appendChild(error);
-                }
+        block.querySelectorAll('.error-message').forEach(el => el.remove());
 
-                if (!subSubjectId) {
-                    const error = document.createElement('div');
-                    error.classList.add('error-message', 'text-danger');
-                    error.textContent = 'Subject Paper is required';
-                    block.querySelector('.routine-subject-paper').parentElement.appendChild(error);
-                }
+        if (!subjectId || !day || !startingTime || !endingTime || !date) {
+            hasError = true;
+            block.classList.add('border', 'border-danger');
 
-                if (!day) {
-                    const error = document.createElement('div');
-                    error.classList.add('error-message', 'text-danger');
-                    error.textContent = 'Day is required';
-                    block.querySelector('input[name="day[]"]').parentElement.appendChild(error);
-                }
-
-                if (!startingTime) {
-                    const error = document.createElement('div');
-                    error.classList.add('error-message', 'text-danger');
-                    error.textContent = 'Starting Time is required';
-                    block.querySelector('input[name="starting_time[]"]').parentElement.appendChild(error);
-                }
-
-                if (!endingTime) {
-                    const error = document.createElement('div');
-                    error.classList.add('error-message', 'text-danger');
-                    error.textContent = 'Ending Time is required';
-                    block.querySelector('input[name="ending_time[]"]').parentElement.appendChild(error);
-                }
-            } else {
-                block.classList.remove('border', 'border-danger');
+            if (!subjectId) {
+                const error = document.createElement('div');
+                error.classList.add('error-message', 'text-danger');
+                error.textContent = 'Subject is required';
+                block.querySelector('.routine-subject').parentElement.appendChild(error);
             }
 
-            routines.push({
-                subject_id: subjectId,
-                sub_subject_id: subSubjectId,
-                day: day,
-                starting_time: startingTime,
-                ending_time: endingTime
-            });
+            if (!day) {
+                const error = document.createElement('div');
+                error.classList.add('error-message', 'text-danger');
+                error.textContent = 'Day is required';
+                block.querySelector('input[name="day[]"]').parentElement.appendChild(error);
+            }
+
+            if (!date) {
+                const error = document.createElement('div');
+                error.classList.add('error-message', 'text-danger');
+                error.textContent = 'Date is required';
+                block.querySelector('input[name="date[]"]').parentElement.appendChild(error);
+            }
+
+            if (!startingTime) {
+                const error = document.createElement('div');
+                error.classList.add('error-message', 'text-danger');
+                error.textContent = 'Starting Time is required';
+                block.querySelector('input[name="starting_time[]"]').parentElement.appendChild(error);
+            }
+
+            if (!endingTime) {
+                const error = document.createElement('div');
+                error.classList.add('error-message', 'text-danger');
+                error.textContent = 'Ending Time is required';
+                block.querySelector('input[name="ending_time[]"]').parentElement.appendChild(error);
+            }
+        } else {
+            block.classList.remove('border', 'border-danger');
+        }
+
+        routines.push({
+            subject_id: subjectId,
+            sub_subject_id: subSubjectId,
+            day: day,
+            date:date,
+            starting_time: startingTime,
+            ending_time: endingTime
+        });
+    });
+
+
+    if (hasError) {
+        return;
+    }
+
+    console.log('Routines Array:', routines);
+
+    try {
+        let res = await axios.post('/routine-create', {
+            routines: routines,
+            student_class_id: student_class_id
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         });
 
-        if (hasError) {
-            return;
+        if (res.data.status === "success") {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: res.data.message,
+            }).then(() => {
+                document.getElementById('student_class_id').value = '';
+                document.querySelectorAll('.routine-block').forEach(block => block.remove());
+
+                const routineAddModal = bootstrap.Modal.getInstance(document.getElementById('routineAddModal'));
+                routineAddModal.hide();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.data.message,
+            });
         }
-
-        try {
-            let res = await axios.post('/routine-create', { routines: routines, student_class_id: student_class_id });
-
-            if (res.data.status === "success") {
-                console.log(res.data);
-            } else {
-                alert('Error: ' + res.data.message);
-            }
-        } catch (error) {
-            console.error('Error creating routine:', error);
-            alert('An error occurred while creating the routine.');
+    } catch (error) {
+        console.error('Error creating routine:', error);
+        if (error.response && error.response.data) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.response.data.message || 'An error occurred while creating the routine.',
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while creating the routine.',
+            });
         }
     }
+}
+
+// Helper Function: Error Message যোগ করা
+function addErrorMessage(element, message) {
+    const error = document.createElement('div');
+    error.classList.add('error-message', 'text-danger');
+    error.textContent = message;
+    element.appendChild(error);
+}
+
 </script>
 
 <!-- Bootstrap Icons CDN -->

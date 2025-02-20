@@ -13,7 +13,13 @@ class Routine extends Model
         'subject_id',
         'sub_subject_id',
         'day',
+        'date',
         'starting_time',
         'ending_time',
     ];
+
+
+    // protected $attributes = [
+    //     'sub_subject_id' => 0,
+    // ];
 }

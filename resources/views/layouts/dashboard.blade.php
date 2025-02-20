@@ -9,12 +9,14 @@
         <title>Dashboard</title>
         {{-- <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" /> --}}
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <link href="{{asset('assets/css/styles.css')}}" rel="stylesheet" />
         <link href="{{asset('assets/css/sweetalert2.css')}}" rel="stylesheet" />
         <script src="{{asset('assets/js/jquery-3.7.1.min.js')}}"></script>
         <script src="{{asset('assets/js/axios.min.js')}}"></script>
         <script src="{{asset('assets/js/sweetalert2.min.js')}}"></script>
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     </head>
     <body class="sb-nav-fixed">
         
