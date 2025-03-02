@@ -13,6 +13,7 @@ class ExamSchedule extends Model
     protected $fillable = [
         'user_id',
         'subject_id',
+        'sub_subject_id',
         'student_class_id',
         'name',
         'exam_date',

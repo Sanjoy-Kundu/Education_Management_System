@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->foreignId('sub_subject_id')->nullable()->constrained('sub_subjects')->onDelete('cascade');
             $table->foreignId('student_class_id')->constrained('student_classes')->onDelete('cascade');
             $table->string('name'); //first semister exam, final exam
             $table->date('exam_date');
