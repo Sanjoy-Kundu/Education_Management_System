@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Support\Str;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
@@ -24,7 +25,6 @@ class StudentClassController extends Controller
         
         $request->validate([
             'name' => 'required|max:255|unique:student_classes,name',
-            'capacity' => 'required|integer',
         ]);
 
 

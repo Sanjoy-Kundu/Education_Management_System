@@ -51,10 +51,10 @@
         }
 
 
-        if(!capacity){
-            document.getElementById('class_capacity_error').innerText = "Capacity Field is required";
-            isError = true
-        }
+        // if(!capacity){
+        //     document.getElementById('class_capacity_error').innerText = "Capacity Field is required";
+        //     isError = true
+        // }
 
 
         if(isError) return 
@@ -73,7 +73,6 @@
             document.getElementById('class_modal_close').click();
             await getClassLists();
             console.log(res.data.message);
-
         }else{
             console.log(res.data.message)
         }

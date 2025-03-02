@@ -12,7 +12,7 @@ class UserController extends Controller
 {
 
 
-    public function loginPage(Request $request){
+    public function loginPage(){
         try{
             return view('pages.login.loginPage');
         }catch(Exception $ex){
@@ -21,8 +21,19 @@ class UserController extends Controller
     }
 
 
-    public function userRegistration(Request $request){
+    public function registerPage(){
         try{
+            return view('pages.login.registerPage');
+        }catch(Exception $ex){
+            return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+        }
+    }
+
+
+
+    public function userRegistration(Request $request)
+    {
+        try {
             $validated = $request->validate([
                 'name' => 'required',
                 'email' => 'required|email|unique:users|max:255',
@@ -30,13 +41,14 @@ class UserController extends Controller
             ]);
 
             User::create([
-                'name'=> Str::upper($request->input('name')),
+                'name' => Str::upper($request->input('name')),
                 'email' => Str::lower($request->input('email')),
                 'password' => Hash::make($request->input('password'))
             ]);
-            return response()->json(['status' => 'success', 'message'=>'User Registration Successfully']);
-        }catch(Exception $ex){
-            return response()->json(['status' => 'errors', 'message'=>$ex->getMessage()]);
+
+            return response()->json(['status' => 'success', 'message' => 'User Registration Successfully']);
+        } catch (Exception $ex) {
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
         }
     }
 

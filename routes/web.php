@@ -10,15 +10,22 @@ use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\StudentClassController;
 
 Route::get('/login', [UserController::class, 'loginPage'])->name('login');
+Route::get('/register', [UserController::class, 'registerPage']);
 
 Route::post('/user-registration', [UserController::class, 'userRegistration']);
 Route::post('/user-login', [UserController::class, 'userLogin']);
 
-Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
-Route::get('/class/lists', [StudentClassController::class, 'student_class']);
-Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
-Route::get('/class/routine', [RoutineController::class, 'class_routine_lists']);
-Route::get('/exam/schedule/lists', [ExamScheduleController::class, 'exam_schedule_lists_page']);
+
+
+    Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
+    Route::get('/class/lists', [StudentClassController::class, 'student_class']);
+    Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
+    Route::get('/class/routine', [RoutineController::class, 'class_routine_lists']);
+    Route::get('/exam/schedule/lists', [ExamScheduleController::class, 'exam_schedule_lists_page']);
+
+
+
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     //class routes

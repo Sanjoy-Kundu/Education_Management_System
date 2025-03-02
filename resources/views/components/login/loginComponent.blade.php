@@ -97,8 +97,6 @@
             } catch (error) {
                 console.error("error message", error);
             }
-
-
         }
     </script>
 
