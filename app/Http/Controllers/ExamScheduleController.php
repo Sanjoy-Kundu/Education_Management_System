@@ -25,7 +25,7 @@ class ExamScheduleController extends Controller
     public function exam_schedule_lists()
     {
         try{
-            $exam_schedules = ExamSchedule::with('subject', 'studentClass')->get();
+            $exam_schedules = ExamSchedule::with('subject', 'studentClass', 'subSubject')->get();
             return response()->json(['status' => 'success', 'exam_schedules' => $exam_schedules]);
         }catch(Exception $e){
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
@@ -87,6 +87,7 @@ class ExamScheduleController extends Controller
 
         // Check if the exam schedule already exists
         $ExamScheduleDataCheck = ExamSchedule::where('subject_id', $request->subject_id)
+            ->where('sub_subject_id', $request->sub_subject_id)
             ->where('student_class_id', $request->student_class_id)
             ->where('exam_date', $request->exam_date)
             ->where('start_time', $request->start_time)

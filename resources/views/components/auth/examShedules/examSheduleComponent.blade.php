@@ -54,23 +54,39 @@
             try {
                 let res = await axios.get('/exam-schedule-lists');
                 let lists = res.data.exam_schedules;
+                console.log(lists);
                 let listSectionBody = $('#examshedule-table-body');
                 listSectionBody.empty(); // Clear previous data
                 if (lists.length === 0) {
                     listSectionBody.append(
                         '<tr align="center"><td colspan="9" class="text-primary">No data found</td></tr>');
                 }
+
+
+                const formatTimeBD = (time) => {
+                const [hour, minute, second] = time.split(':');
+                let h = parseInt(hour);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                return `${h}:${minute}:${second} ${ampm}`;
+            };
+
+
                 lists.forEach((element, index) => {
+
+                    let startTimeBD = formatTimeBD(element.start_time);
+                    let endTimeBD = formatTimeBD(element.end_time); 
+
                     let row = `
                                     <tr>
                                         <td>${index+1}</td>
                                         <td>${element.student_class.name}</td>
                                         <td>${element.subject.name}</td>
-                                        <td>${element.subject.code}</td>
+                                        <td>${element.sub_subject.sub_subject_code}</td>
                                         <td>${element.name}</td>
                                         <td>${element.exam_date}</td>
-                                        <td>${element.start_time} - ${element.end_time}</td>
-                                        <td>${element.subject.full_marks}</td>
+                                        <td>${startTimeBD} - ${endTimeBD}</td>
+                                        <td>${element.sub_subject.full_marks}</td>
                                         <td>
                                           <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                           <button type="button" class="btn btn-danger examSheduleDelete" data-id="${element.id}">DELETE</button>

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ExamSchedule;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubSubject extends Model
 {
@@ -14,4 +15,10 @@ class SubSubject extends Model
     public function subject(){
         return $this->belongsTo(Subject::class);
     }
+
+
+    public function examSchedules()
+{
+    return $this->hasMany(ExamSchedule::class, 'sub_subject_id');
+}
 }

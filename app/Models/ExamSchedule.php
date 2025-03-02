@@ -25,6 +25,14 @@ class ExamSchedule extends Model
     {
         return $this->belongsTo(Subject::class);
     }
+
+    public function subSubject()
+    {
+        return $this->belongsTo(SubSubject::class, 'sub_subject_id');
+    }
+
+
+
     public function studentClass()
     {
         return $this->belongsTo(StudentClass::class);
