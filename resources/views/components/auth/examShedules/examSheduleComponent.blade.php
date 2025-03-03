@@ -13,6 +13,15 @@
                             <button class="btn btn-primary w-25" data-bs-toggle="modal"
                                 data-bs-target="#examSheduleModal">ADD EXAM</button><br><br>
 
+                            <!-- Filter Dropdown -->
+                            <div class="mb-3 w-25">
+                                <label for="classFilter" class="form-label"><h5>Filter by Class:</h5></label>
+                                <select class="form-select" id="classFilter">
+                                    <option value="">Select Class</option>
+                                   
+                                </select>
+                            </div>
+
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -49,6 +58,26 @@
         }
 
 
+        // filtering class list
+        filteringClassLists()
+        async function filteringClassLists() {
+        try {
+            let res = await axios.get('/student-class-lists');
+            console.log(res.data);
+            let classes = res.data.classLists;
+            let classFilter = $('#classFilter');
+            classFilter.empty();
+            classFilter.append('<option value="">Select Class</option>');
+            classes.forEach(cls => {
+                classFilter.append(`<option value="${cls.id}">${cls.name}</option>`);
+            });
+        } catch (error) {
+            console.error('Error fetching class lists:', error);
+        }
+    }
+        // filtering class list
+
+
         getExamSheduleListsShow();
         async function getExamSheduleListsShow() {
             try {
@@ -64,18 +93,18 @@
 
 
                 const formatTimeBD = (time) => {
-                const [hour, minute, second] = time.split(':');
-                let h = parseInt(hour);
-                const ampm = h >= 12 ? 'PM' : 'AM';
-                h = h % 12 || 12;
-                return `${h}:${minute}:${second} ${ampm}`;
-            };
+                    const [hour, minute, second] = time.split(':');
+                    let h = parseInt(hour);
+                    const ampm = h >= 12 ? 'PM' : 'AM';
+                    h = h % 12 || 12;
+                    return `${h}:${minute}:${second} ${ampm}`;
+                };
 
 
                 lists.forEach((element, index) => {
 
                     let startTimeBD = formatTimeBD(element.start_time);
-                    let endTimeBD = formatTimeBD(element.end_time); 
+                    let endTimeBD = formatTimeBD(element.end_time);
 
                     let row = `
                                     <tr>
