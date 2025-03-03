@@ -15,14 +15,16 @@
 
                             <!-- Filter Dropdown -->
                             <div class="mb-3 w-25">
-                                <label for="classFilter" class="form-label"><h5>Filter by Class:</h5></label>
+                                <label for="classFilter" class="form-label">
+                                    <h5>Filter by Class:</h5>
+                                </label>
                                 <select class="form-select" id="classFilter">
                                     <option value="">Select Class</option>
-                                   
+
                                 </select>
                             </div>
 
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="examSheduleTable">
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -60,28 +62,28 @@
 
         // filtering class list
         filteringClassLists()
-        async function filteringClassLists(classId='') {
-        try {
-            let res = await axios.get('/student-class-lists');
-            let classes = res.data.classLists;
-            let classFilter = $('#classFilter');
-            classFilter.empty();
-            classFilter.append('<option value="">Select Class</option>');
-            classes.forEach(cls => {
-                classFilter.append(`<option value="${cls.id}">${cls.name}</option>`);
-            });
-        } catch (error) {
-            console.error('Error fetching class lists:', error);
+        async function filteringClassLists(classId = '') {
+            try {
+                let res = await axios.get('/student-class-lists');
+                let classes = res.data.classLists;
+                let classFilter = $('#classFilter');
+                classFilter.empty();
+                classFilter.append('<option value="">Select Class</option>');
+                classes.forEach(cls => {
+                    classFilter.append(`<option value="${cls.id}">${cls.name}</option>`);
+                });
+            } catch (error) {
+                console.error('Error fetching class lists:', error);
+            }
         }
-    }
 
 
-    //======== filter data click system ===========
-    $('#classFilter').on('change', function() {
-    let selectedClassId = $(this).val();
-    getExamSheduleListsShow(selectedClassId);
-   });
-    //======== filter data click system ===========
+        //======== filter data click system ===========
+        $('#classFilter').on('change', function() {
+            let selectedClassId = $(this).val();
+            getExamSheduleListsShow(selectedClassId);
+        });
+        //======== filter data click system ===========
 
 
 
@@ -97,9 +99,9 @@
                 //console.log(lists);
 
                 //filter lists by class name 
-                if(classId){
+                if (classId) {
                     //lists = lists.filter(list => list);
-                     lists = lists.filter(list => list.student_class_id == classId);
+                    lists = lists.filter(list => list.student_class_id == classId);
                     //console.log(lists);
                 }
                 console.log(lists);
@@ -120,10 +122,10 @@
                     h = h % 12 || 12;
                     return `${h}:${minute}:${second} ${ampm}`;
                 };
-       
+
 
                 lists.forEach((element, index) => {
-                    console.log(element.sub_subject === null ? "Vlue is Null": element.subject);
+                    console.log(element.sub_subject === null ? "Vlue is Null" : element.subject);
                     let startTimeBD = formatTimeBD(element.start_time);
                     let endTimeBD = formatTimeBD(element.end_time);
 
@@ -201,6 +203,9 @@
                     $('#examSheduleUpdateModal').modal('show');
                 })
 
+
+
+                new DataTable('#examSheduleTable');
             } catch (error) {
                 console.error('Error fetching exam lists:', error);
             }
