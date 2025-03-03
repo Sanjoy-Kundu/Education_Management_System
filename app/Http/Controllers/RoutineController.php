@@ -131,7 +131,22 @@ class RoutineController extends Controller
     }
 
     
+
+
+    /**
+     * Remove the specified class routine view 
+     */
+  
+    public function class_routine_view($id){
+        try{
+            return $id;
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong: ' . $ex->getMessage()]);
+        }
+    }
     
+
+
 
     /**
      * Show the form for editing the specified resource.

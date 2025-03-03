@@ -20,8 +20,12 @@
                                 </label>
                                 <select class="form-select" id="classFilter">
                                     <option value="">Select Class</option>
-
                                 </select>
+                            </div>
+
+                            <!-- Dynamic Button -->
+                            <div id="viewClassButtonContainer" class="mb-3" style="display: none">
+                                <button id="viewClassButton" class="btn btn-warning">View Your Class Routine</button>
                             </div>
 
                             <table class="table table-bordered" id="examSheduleTable">
@@ -36,6 +40,7 @@
                                         <th scope="col">Time</th>
                                         <th scope="col">Full Marks</th>
                                         <th scope="col">Action</th>
+                                        <th scope="col">View Routine</th>
                                     </tr>
                                 </thead>
                                 <tbody id="examshedule-table-body">
@@ -84,12 +89,9 @@
             getExamSheduleListsShow(selectedClassId);
         });
         //======== filter data click system ===========
-
-
-
-
-
         // filtering class list
+
+
 
         getExamSheduleListsShow();
         async function getExamSheduleListsShow(classId = "") {
@@ -145,10 +147,13 @@
                                           <button type="button" class="btn btn-warning examSheduleEdit" data-id="${element.id}">EDIT</button>
                                          </div>
                                         </td>
+                                        <td><button type="button" class="btn btn-warning examSheduleRoutineView" data-id="${element.student_class.id}">View Routine</button></td>
                                     </tr>
                     `
                     listSectionBody.append(row);
                 });
+
+
 
                 $('.examSheduleDelete').on('click', function() {
                     let id = $(this).data('id');
@@ -204,8 +209,15 @@
                 })
 
 
+                $('.examSheduleRoutineView').on('click', async function() {
+                    let id = $(this).data('id')
+                    await examSheduleRoutineView(id);
+                    $('#examSheduleRoutineViewModal').modal('show');
+                })
 
-                new DataTable('#examSheduleTable');
+
+
+       
             } catch (error) {
                 console.error('Error fetching exam lists:', error);
             }

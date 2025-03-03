@@ -54,10 +54,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/exam-schedule-post', [ExamScheduleController::class, 'exam_schedule_post']);
     Route::post('/exam-schedule-delete-by-id', [ExamScheduleController::class, 'exam_schedule_delete_by_id']);
     Route::post('/exam-shedule-detail-by-id', [ExamScheduleController::class, 'exam_shedule_detail_by_id']);
+    Route::get('/exam-schedule-lists-by-class-id/{id}', [ExamScheduleController::class, 'exam_schedule_lists_by_class_id']);
 
     //routine routes
     Route::post('/subject-lists-by-class-name-routine', [RoutineController::class, 'subject_lists_by_class_routine']);
     Route::post('/subject-papers-by-subject', [RoutineController::class, 'getSubjectPapersBySubject']);
     Route::post('/routine-create', [RoutineController::class, 'routine_create']);
+
 });
 

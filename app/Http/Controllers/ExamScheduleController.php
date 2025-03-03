@@ -132,57 +132,6 @@ class ExamScheduleController extends Controller
 
 
 
-//     public function exam_schedule_post(Request $request)
-// {
-//     try {
-//         // Validate the request data
-//         $request->validate([
-//             'subject_id' => 'required|exists:subjects,id', // Ensure subject exists
-//             'student_class_id' => 'required|exists:student_classes,id', // Ensure class exists
-//             'name' => 'required|string|max:255', // Exam name is required
-//             'exam_date' => 'required|date_format:Y-m-d', // Date format validation
-//             'start_time' => 'required|date_format:H:i', // Time format validation
-//             'end_time' => 'required|date_format:H:i|after:start_time', // End time must be after start time
-//             'sub_subject_id' => 'nullable|exists:sub_subjects,id', // Optional sub_subject_id
-//         ]);
-
-//         // Check if the exam schedule already exists
-//         $ExamScheduleDataCheck = ExamSchedule::where('subject_id', $request->subject_id)
-//             ->where('sub_subject_id', $request->sub_subject_id)
-//             ->where('student_class_id', $request->student_class_id)
-//             ->where('exam_date', $request->exam_date)
-//             ->where('start_time', $request->start_time)
-//             ->where('end_time', $request->end_time)
-//             ->first();
-
-//         if ($ExamScheduleDataCheck) {
-//             return response()->json(['status' => 'error', 'message' => 'Exam Schedule already exists']);
-//         }
-
-//         // Create the exam schedule
-//         ExamSchedule::create([
-//             'user_id' => Auth::id(), // Logged-in user ID
-//             'subject_id' => $request->subject_id,
-//             'student_class_id' => $request->student_class_id,
-//             'sub_subject_id' => $request->sub_subject_id, // Include sub_subject_id
-//             'name' => $request->name,
-//             'exam_date' => $request->exam_date,
-//             'start_time' => $request->start_time,
-//             'end_time' => $request->end_time,
-//         ]);
-
-//         return response()->json(['status' => 'success', 'message' => 'Exam Schedule created successfully']);
-//     } catch (Exception $e) {
-//         // Handle any exceptions
-//         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-//     }
-// }
-
-
-
-
-
-
     public function exam_schedule_delete_by_id(Request $request)
     {
         try{
@@ -217,6 +166,18 @@ class ExamScheduleController extends Controller
         }
     }
 
+
+
+
+
+    public function exam_schedule_lists_by_class_id($id){
+        try{
+            $exam_schedules = ExamSchedule::where('student_class_id', $id)->with('subject', 'studentClass','subSubject')->get();
+            return response()->json(['status' => 'success', 'exam_schedules' => $exam_schedules]);
+        }catch(Exception $e){   
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
