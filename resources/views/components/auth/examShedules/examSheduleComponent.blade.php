@@ -79,8 +79,7 @@
     //======== filter data click system ===========
     $('#classFilter').on('change', function() {
     let selectedClassId = $(this).val();
-    console.log(selectedClassId);
-    //getExamSheduleListsShow(selectedClassId);
+    getExamSheduleListsShow(selectedClassId);
    });
     //======== filter data click system ===========
 
@@ -91,11 +90,21 @@
         // filtering class list
 
         getExamSheduleListsShow();
-        async function getExamSheduleListsShow() {
+        async function getExamSheduleListsShow(classId = "") {
             try {
                 let res = await axios.get('/exam-schedule-lists');
                 let lists = res.data.exam_schedules;
+                //console.log(lists);
+
+                //filter lists by class name 
+                if(classId){
+                    //lists = lists.filter(list => list);
+                     lists = lists.filter(list => list.student_class_id == classId);
+                    //console.log(lists);
+                }
                 console.log(lists);
+                //filter lists by class name 
+
                 let listSectionBody = $('#examshedule-table-body');
                 listSectionBody.empty(); // Clear previous data
                 if (lists.length === 0) {
