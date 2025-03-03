@@ -63,13 +63,20 @@
     ClassSelectLists();
     async function ClassSelectLists() {
         try {
-            let res = await axios.get('/student-class-lists');
-            let lists = res.data.classLists;
-            let listSectionBody = $('#select-class-lists');
-            listSectionBody.empty(); // Clear previous data
+     // Fetch class lists from the server
+     let res = await axios.get('/student-class-lists');
+        let lists = res.data.classLists;
 
-            let defaultOption = `<option value="" selected>Select One</option>`;
-            listSectionBody.append(defaultOption);
+        // Get the select element for class lists
+        let listSectionBody = $('#select-class-lists');
+        listSectionBody.empty(); // Clear previous data
+
+        let defaultOption = `<option value="" selected>Select One</option>`;
+        if (lists.length === 0) {
+            defaultOption = `<option value="" selected>No Class Found</option>`;
+        }
+        listSectionBody.append(defaultOption);
+        
             lists.forEach((element) => {
                 let option = `<option value="${element.id}">${element.name}</option>`;
                 listSectionBody.append(option);
@@ -122,17 +129,20 @@
                 if (lists.length === 0) {
                     let defaultOption = `   
                         <div class="form-check form-check-inline">
-                            <label class="form-check-label" for="inlineRadio1">No Sub Subject Added</label>
+                            <label class="form-check-label" for="inlineRadio1">
+                                <input type="radio" name="sub_subject_id" class="form-check-input" value="0" checked> No Sub Subject Found
+                            </label>
                         </div>`;
                     listSectionBody.append(defaultOption);
                     return;
                 }
 
                 lists.forEach((element) => {
+                    let subSubjectChecked = element.sub_subject_name ? '' : 'checked';
                     let radio = `
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="sub_subject_id" id="radio_sub_subject_name_${element.id}" value="${element.id}">
-                            <label class="form-check-label" for="radio_sub_subject_name_${element.id}">${element.sub_subject_name}</label>
+                            <input class="form-check-input" type="radio" name="sub_subject_id" id="radio_sub_subject_name_${element.id}" value="${element.id}" ${subSubjectChecked}>
+                            <label class="form-check-label" for="radio_sub_subject_name_${element.id}">${element.sub_subject_name? element.sub_subject_name : 'According to the Subject'}</label>
                         </div>
                     `;
                     listSectionBody.append(radio);
@@ -159,7 +169,7 @@
         let exam_date = document.getElementById('exam_date').value;
         let start_time = document.getElementById('starting_time').value;
         let end_time = document.getElementById('ending_time').value;
-        let sub_subject_id = document.querySelector('input[name="sub_subject_id"]:checked')?.value || null;
+        let sub_subject_id = document.querySelector('input[name="sub_subject_id"]:checked')?.value || 0;
 
         let isError = false;
 
@@ -201,69 +211,57 @@
 
         console.log("Data to be sent to server:", data);
 
-        // Uncomment this part to send data to the server
         try {
-    const token = localStorage.getItem('authToken'); 
-    console.log(token);
-    if (!token) {
-        throw new Error('No token found in localStorage');
-    }
+            const token = localStorage.getItem('authToken'); 
+            if (!token) {
+                throw new Error('No token found in localStorage');
+            }
 
+            let res = await axios.post('/exam-schedule-post', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
 
+            if (res.data.status === 'success') {
+                await getExamSheduleListsShow(); 
+                $('#examSheduleModal').modal('hide');
 
+                Swal.fire({
+                    title: 'Success!',
+                    text: res.data.message,
+                    icon: 'success',
+                    timer: 3000
+                });
 
-    let res = await axios.post('/exam-schedule-post', data, {
-    headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    }
-});
+                document.getElementById('examSheduleForm').reset();
+            } else {
+                document.getElementById('shedule_class_name_error').innerText = res.data.message;
+                document.getElementById('shedule_subject_name_error').innerText = res.data.message;
+                document.getElementById('exam_name_error').innerText = res.data.message;
+                document.getElementById('shedule_exam_date_error').innerText = res.data.message;
+                document.getElementById('shedule_start_time_error').innerText = res.data.message;
+                document.getElementById('shedule_end_time_error').innerText = res.data.message;
+            }
+        } catch (error) {
+            console.error('Error uploading exam:', error);
 
-
-    if (res.data.status === 'success') {
-        await getExamSheduleListsShow(); 
-        $('#examSheduleModal').modal('hide');
-
-   
-        Swal.fire({
-            title: 'Success!',
-            text: res.data.message,
-            icon: 'success',
-            timer: 3000
-        });
-
-        document.getElementById('examSheduleForm').reset();
-    } else {
- 
-        document.getElementById('shedule_class_name_error').innerText = res.data.message;
-        document.getElementById('shedule_subject_name_error').innerText = res.data.message;
-        document.getElementById('exam_name_error').innerText = res.data.message;
-        document.getElementById('shedule_exam_date_error').innerText = res.data.message;
-        document.getElementById('shedule_start_time_error').innerText = res.data.message;
-        document.getElementById('shedule_end_time_error').innerText = res.data.message;
-    }
-} catch (error) {
-    console.error('Error uploading exam:', error);
-
-
-    if (error.message === 'No token found in localStorage') {
-        Swal.fire({
-            title: 'Error!',
-            text: 'You are not authenticated. Please login again.',
-            icon: 'error',
-            timer: 3000
-        });
-    } else {
-
-        Swal.fire({
-            title: 'Error!',
-            text: 'An error occurred while uploading the exam schedule.',
-            icon: 'error',
-            timer: 3000
-        });
-    }
-}
-
-    
+            if (error.message === 'No token found in localStorage') {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'You are not authenticated. Please login again.',
+                    icon: 'error',
+                    timer: 3000
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while uploading the exam schedule.',
+                    icon: 'error',
+                    timer: 3000
+                });
+            }
+        }
     }
 </script>

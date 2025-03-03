@@ -60,10 +60,9 @@
 
         // filtering class list
         filteringClassLists()
-        async function filteringClassLists() {
+        async function filteringClassLists(classId='') {
         try {
             let res = await axios.get('/student-class-lists');
-            console.log(res.data);
             let classes = res.data.classLists;
             let classFilter = $('#classFilter');
             classFilter.empty();
@@ -75,8 +74,21 @@
             console.error('Error fetching class lists:', error);
         }
     }
-        // filtering class list
 
+
+    //======== filter data click system ===========
+    $('#classFilter').on('change', function() {
+    let selectedClassId = $(this).val();
+    console.log(selectedClassId);
+    //getExamSheduleListsShow(selectedClassId);
+   });
+    //======== filter data click system ===========
+
+
+
+
+
+        // filtering class list
 
         getExamSheduleListsShow();
         async function getExamSheduleListsShow() {
@@ -99,10 +111,10 @@
                     h = h % 12 || 12;
                     return `${h}:${minute}:${second} ${ampm}`;
                 };
-
+       
 
                 lists.forEach((element, index) => {
-
+                    console.log(element.sub_subject === null ? "Vlue is Null": element.subject);
                     let startTimeBD = formatTimeBD(element.start_time);
                     let endTimeBD = formatTimeBD(element.end_time);
 
