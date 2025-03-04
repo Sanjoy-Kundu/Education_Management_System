@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ExamSchedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -178,6 +179,39 @@ class ExamScheduleController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+
+
+
+
+
+
+
+
+    // public function download_exam_schedule_pdf($student_class_id)
+    // {
+    //     try {
+    //         // Fetch exam schedules for the given class
+    //         $exam_schedules = ExamSchedule::where('student_class_id', $student_class_id)
+    //             ->with('subject', 'studentClass', 'subSubject')
+    //             ->get();
+
+          
+    //         if(!$exam_schedules){
+    //             return response()->json(['status' => 'error', 'message' => 'No exam schedules found for the given class.']);
+    //         }
+
+    //         $datas =  ['exam_schedules' => $exam_schedules];
+    //         $pdf = PDF::loadView('pdf.exam', $datas);
+    //         return $pdf->download('exam_schedule.pdf');
+    //     } catch (Exception $e) {
+    //         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+    //     }
+    // }
+
+
+
+
     /**
      * Show the form for editing the specified resource.
      */

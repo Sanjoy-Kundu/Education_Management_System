@@ -1,6 +1,6 @@
 <style>
     .modal-header {
-        background-color: #7b8794;
+        background-color: #fafcff;
         color: rgb(56, 43, 43);
         padding: 20px;
     }
@@ -85,14 +85,19 @@
                     <h1 class="modal-title fs-5" id="examSheduleRoutineViewModalLabel">Professional Certificate
                         Examination</h1>
                     <h2 class="institute-name">Institute Name: Learning Management System</h2>
-                    <h5 class="shedule-year">Exam Year: <span id="sheduleYear"></span></h5>
+                    <h5 class="shedule-year">Exam Year: <span>{{ date('Y') }}</span></h5>
                     <h5 class="shedule-date"> Date: <span id="sheduleDate"></span></h5>
                     <h5 class="shedule-time"> Time: <span id="sheduleTime"></span></h5>
                 </div>
-                <img src="{{asset('assets/logo/logo.png')}}" alt="Logo" class="logo" style="height: 70px; width:70px; border-radius: 50%; margin-left: 20px;">
+                <img src="{{ asset('assets/logo/logo.png') }}" alt="Logo" class="logo"
+                    style="height: 70px; width:70px; border-radius: 50%; margin-left: 20px;">
             </div>
             <div class="modal-body">
                 <!-- Dynamic Table for Routine -->
+                <div>
+                    <h4>Exam Shedule of Class <span id="className"></span></h4>
+                    <input type="number" name="class_id" id="classId">
+                </div>
                 <div class="table-responsive">
                     <table class="table table-custom">
                         <thead>
@@ -110,28 +115,10 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Instructions -->
-                <div class="instructions">
-                    <h5>Instructions:</h5>
-                    <ul>
-                        <li>Entry in the Exam Center will be from 9 AM to 10 AM only. No candidate shall be allowed
-                            thereafter.</li>
-                        <li>Candidate is advised to carry only BLR/ROYAL BLUE BALL POINT/GEL/FOUNTAIN pen.</li>
-                        <li>Candidate is advised to carry only permissible items at the examination center as given in
-                            Admit Card.</li>
-                        <li>Candidate will only appear in subjects offered by him/her.</li>
-                        <li>Candidate should occupy the seat allotted to him/her against the roll number.</li>
-                        <li>Candidate should read the instructions carefully given in Answer Book and Question Paper.
-                        </li>
-                        <li>Candidate should fill in relevant and correct details in Answer Book and Question Paper.
-                        </li>
-                    </ul>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="uploadExam(event)">Download PDF</button>
+                <button type="button" class="btn btn-primary" id="downloadPdfButton">Download PDF</button>
             </div>
         </div>
     </div>
@@ -146,8 +133,9 @@
                 let routineTableBody = document.getElementById('routineTableBody');
                 routineTableBody.innerHTML = ''; // Clear previous data
 
-                // Set dynamic exam year
-                document.getElementById('sheduleYear').innerText = res.data.exam_year || '2021';
+                document.getElementById('className').innerText = exam_schedules[0].student_class.name ?
+                    exam_schedules[0].student_class.name : "Not Found";
+                document.getElementById('classId').value = exam_schedules[0].student_class.id;
 
                 if (exam_schedules.length === 0) {
                     routineTableBody.innerHTML = `
@@ -188,9 +176,7 @@
         return `${h}:${minute} ${ampm}`;
     }
 
-    // Current year
-    const currentYear = new Date().getFullYear();
-    document.getElementById("sheduleYear").textContent = currentYear;
+
 
     // Current date
     const currentDate = new Date().toLocaleDateString();
@@ -199,4 +185,21 @@
     // Current time
     const currentTime = new Date().toLocaleTimeString();
     document.getElementById("sheduleTime").textContent = currentTime;
+
+
+
+    // document.getElementById('downloadPdfButton').addEventListener('click', async function() {
+    //     let student_class_id = document.getElementById('classId').value;
+    //     console.log(student_class_id);
+    //     if (student_class_id) {
+    //         try {
+    //             let res = await axios.post(`/download-exam-schedule/{student_class_id:student_class_id}`);
+    //             console.log(res.data.exam_schedules);
+    //         } catch (error) {
+    //             console.error('Error downloading PDF:', error.response?.data?.message || error.message);
+    //         }
+    //     } else {
+    //         console.log("Class ID not found");
+    //     }
+    // });
 </script>

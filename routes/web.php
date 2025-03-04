@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/exam-schedule-delete-by-id', [ExamScheduleController::class, 'exam_schedule_delete_by_id']);
     Route::post('/exam-shedule-detail-by-id', [ExamScheduleController::class, 'exam_shedule_detail_by_id']);
     Route::get('/exam-schedule-lists-by-class-id/{id}', [ExamScheduleController::class, 'exam_schedule_lists_by_class_id']);
+    // Route::post('/download-exam-schedule/{id}', [ExamScheduleController::class, 'download_exam_schedule_pdf']);
 
     //routine routes
     Route::post('/subject-lists-by-class-name-routine', [RoutineController::class, 'subject_lists_by_class_routine']);
