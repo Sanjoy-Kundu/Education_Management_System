@@ -106,7 +106,7 @@
                     lists = lists.filter(list => list.student_class_id == classId);
                     //console.log(lists);
                 }
-                console.log(lists);
+                //console.log(lists);
                 //filter lists by class name 
 
                 let listSectionBody = $('#examshedule-table-body');
@@ -127,7 +127,8 @@
 
 
                 lists.forEach((element, index) => {
-                    console.log(element.sub_subject === null ? "Vlue is Null" : element.subject);
+                    //console.log(element);
+                    //console.log(element.sub_subject === null ? "Vlue is Null" : element.subject);
                     let startTimeBD = formatTimeBD(element.start_time);
                     let endTimeBD = formatTimeBD(element.end_time);
 

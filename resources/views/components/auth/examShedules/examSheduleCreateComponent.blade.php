@@ -138,10 +138,16 @@
                 }
 
                 lists.forEach((element) => {
+                    let isCheck; 
+                    if (element.sub_subject_name === "null") {
+                        isCheck = 'checked';
+                    } else {
+                        isCheck = '';
+                    }
                     let subSubjectChecked = element.sub_subject_name ? '' : 'checked';
                     let radio = `
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="sub_subject_id" id="radio_sub_subject_name_${element.id}" value="${element.id}" ${subSubjectChecked}>
+                            <input class="form-check-input" type="radio" name="sub_subject_id" id="radio_sub_subject_name_${element.id}" value="${element.id}" ${isCheck}>
                             <label class="form-check-label" for="radio_sub_subject_name_${element.id}">${element.sub_subject_name? element.sub_subject_name : 'According to the Subject'}</label>
                         </div>
                     `;
