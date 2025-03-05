@@ -12,7 +12,15 @@
                         <div class="card-body">
                             <button class="btn btn-primary w-25" data-bs-toggle="modal"
                                 data-bs-target="#subjectModal">ADD SUBJECT</button><br><br>
-
+                            <!-- Filter Dropdown -->
+                            <div class="mb-3 w-25">
+                                <label for="classFilter" class="form-label">
+                                    <h5>Filter by Class:</h5>
+                                </label>
+                                <select class="form-select" id="subjectComponentClassFilter">
+                                    <option value="">Select Class</option>
+                                </select>
+                            </div>
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -26,7 +34,6 @@
                                 <tbody id="subject-table-body">
 
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -44,12 +51,53 @@
             console.error('No auth token found');
         }
 
+
+             // filtering class list
+             filteringClassLists()
+        async function filteringClassLists(classId = '') {
+            try {
+                let res = await axios.get('/student-class-lists');
+                let classes = res.data.classLists;
+                let classFilter = $('#subjectComponentClassFilter');
+                classFilter.empty();
+                classFilter.append('<option value="">Select Class</option>');
+                classes.forEach(cls => {
+                    classFilter.append(`<option value="${cls.id}">${cls.name}</option>`);
+                });
+            } catch (error) {
+                console.error('Error fetching class lists:', error);
+            }
+        }
+
+
+
+
+        $('#subjectComponentClassFilter').on('change', function() {
+            let selectedClassId = $(this).val();
+            console.log(selectedClassId);
+            getSubjectListsShow(selectedClassId);
+        });
+
         getSubjectListsShow()
-        async function getSubjectListsShow() {
+        async function getSubjectListsShow(class_id = "") {
             try {
                 let res = await axios.get('/subject-lists');
                 let lists = res.data.subjectLists;
+
+                if(class_id){
+                    lists = lists.filter(list => list.student_class_id == class_id);
+
+                }
+
                 let listSectionBody = $('#subject-table-body');
+                listSectionBody.empty(); // Clear previous data
+                if (lists.length === 0) {
+                    listSectionBody.append(
+                        '<tr align="center"><td colspan="4">No data available</td></tr>'
+                    );
+                } else {
+                }
+
                 listSectionBody.empty(); // Clear previous data
                 if (lists.length === 0) {
                     listSectionBody.append(
@@ -101,7 +149,7 @@
                                 console.log(res); // Log the response to check the status
                                 if (res.data.status === 'success') {
                                     await getSubjectListsShow
-                                (); // Reload the subject list after deletion
+                                        (); // Reload the subject list after deletion
                                     Swal.fire({
                                         title: "Deleted!",
                                         text: res.data.message,
@@ -128,24 +176,24 @@
                 });
 
 
-            $('.subjectEdit').on('click',async function(){
-                let id = $(this).data('id')
-                await subjectEditShow(id);
-                $('#subjectEditModal').modal('show');
-            })
+                $('.subjectEdit').on('click', async function() {
+                    let id = $(this).data('id')
+                    await subjectEditShow(id);
+                    $('#subjectEditModal').modal('show');
+                })
 
 
-            $('.subjectSubjectCreate').on('click',async function(){
-                let id = $(this).data('id')
-                await subSubjectCreateShow(id);
-                $('#sbuSubjectCreateModal').modal('show');
-            })
+                $('.subjectSubjectCreate').on('click', async function() {
+                    let id = $(this).data('id')
+                    await subSubjectCreateShow(id);
+                    $('#sbuSubjectCreateModal').modal('show');
+                })
 
-            $('.subSubjectView').on('click',async function(){
-                let id = $(this).data('id')
-                await subSubjectViewShow(id);
-                $('#subSubjectViewModal').modal('show');
-            })
+                $('.subSubjectView').on('click', async function() {
+                    let id = $(this).data('id')
+                    await subSubjectViewShow(id);
+                    $('#subSubjectViewModal').modal('show');
+                })
 
             } catch (error) {
                 console.error('Error fetching class lists:', error);
