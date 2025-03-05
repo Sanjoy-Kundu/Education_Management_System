@@ -22,6 +22,7 @@
                                 <select class="form-select routine-subject" aria-label="Default select example"
                                     name="subject_id" id="routineSubjectSelect">
                                 </select>
+                                <span id="routineSubjectError" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Subject Paper</label>
@@ -29,24 +30,29 @@
                                     name="sub_subject_id" id="routineSubjectPaperSelect">
                                     <option value="">Please Select Subject</option>
                                 </select>
+                                <span id="routineSubjectPaperError" class="text-danger"></span>
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label">Day</label>
                                 <select class="form-select routine-subject" aria-label="Default select example"
                                     name="day_id" id="routineDaySelect">
                                 </select>
+                                <span id="routineDayError" class="text-danger"></span>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Routine Date</label>
-                                <input type="date" class="form-control" name="date">
+                                <input type="date" class="form-control" name="date" id="routineDate">
+                                <span id="routineDateError" class="text-danger"></span>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Starting Time</label>
-                                <input type="time" class="form-control" name="starting_time">
+                                <input type="time" class="form-control" name="starting_time" id="startingTime">
+                                <span id="routineStartingTimeError" class="text-danger"></span>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Ending Time</label>
-                                <input type="time" class="form-control" name="ending_time">
+                                <input type="time" class="form-control" name="ending_time" id="endingTime">
+                                <span id="routineEndingTimeError" class="text-danger"></span>
                             </div>
                             <div class="col-3">
                                 <button type="button" class="btn btn-primary" onclick="onRoutineSubmit(event)">ADD
@@ -54,11 +60,73 @@
                             </div>
                         </div>
                     </div>
+
+
+                    {{-- routine lists --}}
+                    <div class="routine-block card shadow-sm p-3 mb-3">
+                        <div class="card-header">
+                            <h5>Routine Lists of Class 6</h5>
+                        </div>
+                        <div class="card-body row g-3">
+                           <div class="col-md-12 col-sm-12 col-xs-12 col-xl-12">
+                            <div class="col-md-2 mb-3">
+                                <label class="form-label">Filter By Day</label>
+                                <select class="form-select routine-subject" aria-label="Default select example"
+                                    name="day_id" id="filterByDay">
+                                </select>
+                                <span id="routineDayError" class="text-danger"></span>
+                            </div>
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">10::00 AM - 10:30 AM</th>
+                                    <th scope="col">10::30 AM - 11:00 AM</th>
+                                    <th scope="col">11::30 AM - 12:00 AM</th>
+                                    <th scope="col">12::00 AM - 12:30 AM</th>
+                                    <th scope="col">12::30 AM - 1:00 PM</th>
+                                    <th scope="col">2:: 00 PM - 2:30 PM </th>
+                                    <th scope="col">3::00 AM -  4:00 AM</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <th scope="row">Bangla 1st</th>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">Bangla 1st</th>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">Bangla 1st</th>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                    <td>Bangla 1st</td>
+                                  </tr>
+                              
+                                </tbody>
+                              </table>
+                         
+                           </div>
+                        </div>
+                    </div>
                 </section>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
             </div>
         </div>
     </div>
@@ -82,17 +150,17 @@
     routineDayLists();
     async function routineDayLists() {
         try {
-     
+
             let res = await axios.get('/day-lists');
             let lists = res.data.dayLists;
 
-        
-            const daySelect = document.getElementById('routineDaySelect');
 
-     
+            const daySelect = document.getElementById('routineDaySelect');
+         
+
             daySelect.innerHTML = '';
 
-         
+
             if (lists.length === 0) {
                 // If no data found, add a default option
                 let option = document.createElement('option');
@@ -119,6 +187,40 @@
         }
     }
 
+
+    //getFilterByDay
+    getFilterByDay();
+    async function getFilterByDay() {
+        try {
+            // Fetch the day lists from the backend
+            let res = await axios.get('/day-lists');
+            console.log(res.data.dayLists);
+
+            // Check if the response contains data
+            if (res.data.dayLists.length > 0) {
+                let parent = document.getElementById('filterByDay');
+                parent.innerHTML = ''; 
+
+                // Add a default option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = ''; 
+                defaultOption.textContent = 'Select a Day'; //
+                parent.appendChild(defaultOption);
+
+                // Loop through the day lists and create options
+                res.data.dayLists.forEach(day => {
+                    let option = document.createElement('option');
+                    option.value = day.id;
+                    option.textContent = day.name; 
+                    parent.appendChild(option);
+                });
+            } else {
+                console.error("No data found in the response.");
+            }
+        } catch (error) {
+            console.error('Error fetching day lists:', error);
+        }
+    }
 
 
 
@@ -195,6 +297,7 @@
             });
             let papers = res.data.papers;
 
+
             selectElement.innerHTML = ""; // Clear previous data
 
             if (papers.length === 0) {
@@ -234,111 +337,118 @@
     async function onRoutineSubmit(event) {
         event.preventDefault();
 
+        document.getElementById('routineSubjectError').innerText = '';
+        document.getElementById('routineSubjectPaperError').innerText = '';
+        document.getElementById('routineDayError').innerText = '';
+        document.getElementById('routineDateError').innerText = '';
+        document.getElementById('routineStartingTimeError').innerText = '';
+        document.getElementById('routineEndingTimeError').innerText = '';
+
+        //initilize border color 
+        document.getElementById('routineSubjectSelect').style.borderColor = '';
+        document.getElementById('routineSubjectPaperSelect').style.borderColor = '';
+        document.getElementById('routineDaySelect').style.borderColor = '';
+        document.getElementById('routineDate').style.borderColor = '';
+        document.getElementById('startingTime').style.borderColor = '';
+        document.getElementById('endingTime').style.borderColor = '';
+
         let student_class_id = document.getElementById('student_class_id').value;
-        const routineBlock = document.querySelector(".routine-block");
-        const routines = [];
-        let hasError = false;
+        let subject_id = document.getElementById('routineSubjectSelect').value;
+        let sub_subject_id = document.getElementById('routineSubjectPaperSelect').value;
+        let day_id = document.getElementById('routineDaySelect').value;
+        let date = document.getElementById('routineDate').value;
+        let starting_time = document.getElementById('startingTime').value;
+        let ending_time = document.getElementById('endingTime').value;
 
-        const subjectId = routineBlock.querySelector('.routine-subject').value;
-        let subSubjectId = routineBlock.querySelector('.routine-subject-paper').value;
-
-        if (subSubjectId === "none") {
-            subSubjectId = null;
+        let isError = false;
+        if (subject_id == '') {
+            document.getElementById('routineSubjectSelect').style.borderColor = 'red';
+            document.getElementById('routineSubjectError').innerText = 'Subject is required';
+            isError = true;
+        }
+        if (sub_subject_id == '') {
+            document.getElementById('routineSubjectPaperSelect').style.borderColor = 'red';
+            document.getElementById('routineSubjectPaperError').innerText = 'Subject Paper is required';
+            isError = true;
+        }
+        if (day_id == '') {
+            document.getElementById('routineDaySelect').style.borderColor = 'red';
+            document.getElementById('routineDayError').innerText = 'Day is required';
+            isError = true;
+        }
+        if (date == '') {
+            document.getElementById('routineDate').style.borderColor = 'red';
+            document.getElementById('routineDateError').innerText = 'Date is required';
+            isError = true;
+        }
+        if (starting_time == '') {
+            document.getElementById('startingTime').style.borderColor = 'red';
+            document.getElementById('routineStartingTimeError').innerText = 'Starting Time is required';
+            isError = true;
+        }
+        if (ending_time == '') {
+            document.getElementById('endingTime').style.borderColor = 'red';
+            document.getElementById('routineEndingTimeError').innerText = 'Ending Time is required';
+            isError = true;
         }
 
-        const day = routineBlock.querySelector('input[name="day"]').value;
-        const date = routineBlock.querySelector('input[name="date"]').value;
-        const startingTime = routineBlock.querySelector('input[name="starting_time"]').value;
-        const endingTime = routineBlock.querySelector('input[name="ending_time"]').value;
+        if (isError) return;
 
-        routineBlock.querySelectorAll('.error-message').forEach(el => el.remove());
 
-        if (!subjectId || !day || !startingTime || !endingTime || !date) {
-            hasError = true;
-            routineBlock.classList.add('border', 'border-danger');
 
-            if (!subjectId) {
-                addErrorMessage(routineBlock.querySelector('.routine-subject').parentElement,
-                'Subject is required');
-            }
-
-            if (!day) {
-                addErrorMessage(routineBlock.querySelector('input[name="day"]').parentElement, 'Day is required');
-            }
-
-            if (!date) {
-                addErrorMessage(routineBlock.querySelector('input[name="date"]').parentElement, 'Date is required');
-            }
-
-            if (!startingTime) {
-                addErrorMessage(routineBlock.querySelector('input[name="starting_time"]').parentElement,
-                    'Starting Time is required');
-            }
-
-            if (!endingTime) {
-                addErrorMessage(routineBlock.querySelector('input[name="ending_time"]').parentElement,
-                    'Ending Time is required');
-            }
-        } else {
-            routineBlock.classList.remove('border', 'border-danger');
-        }
-
-        if (hasError) {
-            return;
-        }
-
-        const routine = {
-            subject_id: subjectId,
-            sub_subject_id: subSubjectId,
-            day: day,
+        let data = {
+            student_class_id:student_class_id,
+            subject_id: subject_id,
+            sub_subject_id: sub_subject_id,
+            day_id: day_id,
             date: date,
-            starting_time: startingTime,
-            ending_time: endingTime
+            starting_time: starting_time,
+            ending_time: ending_time
         };
 
-        console.log('Routine Data:', routine);
+        console.log('Routine Data:',data);
 
-        try {
-            let res = await axios.post('/routine-create', {
-                routines: [routine], // Send as an array with one routine
-                student_class_id: student_class_id
-            });
-
-            if (res.data.status === "success") {
+        try{
+            let res = await axios.post('/routine-create', data)
+            if(res.data.status === 'success'){
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: res.data.message,
-                }).then(() => {
-                    document.getElementById('student_class_id').value = '';
-                    const routineAddModal = bootstrap.Modal.getInstance(document.getElementById(
-                        'routineAddModal'));
-                    routineAddModal.hide();
+                title: res.data.message,
+                icon: "success",
+                draggable: true,
+                timer: 1500
                 });
-            } else {
+                
+            document.getElementById('student_class_id').value  = '';
+            document.getElementById('routineSubjectSelect').value = '';
+            document.getElementById('routineSubjectPaperSelect').value = '';
+            document.getElementById('routineDaySelect').value = '';
+            document.getElementById('routineDate').value = '';
+            document.getElementById('startingTime').value = '';
+            document.getElementById('endingTime').value = '';
+            }else if(res.data.status === 'exists'){
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res.data.message,
+                title: res.data.message,
+                icon: "warning",
+                draggable: true,
+                timer: 7500
                 });
+            }else{
+                console.log(res.data.message);
             }
-        } catch (error) {
-            console.error('Error creating routine:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while creating the routine.',
-            });
+        }catch(error){
+            console.log("error",error);
         }
     }
 
-    // Helper Function: Add error message
-    function addErrorMessage(element, message) {
-        const error = document.createElement('div');
-        error.classList.add('error-message', 'text-danger');
-        error.textContent = message;
-        element.appendChild(error);
-    }
+
+
+
+
+
+
+
+ //routine list show component working not good
+
 </script>
 
 

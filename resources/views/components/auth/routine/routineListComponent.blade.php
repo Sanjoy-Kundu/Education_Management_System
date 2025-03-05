@@ -177,7 +177,7 @@
                 $('.routineAdd').on('click', async function(){
                     let student_class_id = $(this).data('id');
                     await fillRoutineComponent(student_class_id)
-                    $('#routineAddModal').modal('show');
+                     $('#routineAddModal').modal('show');
                 })
 
 

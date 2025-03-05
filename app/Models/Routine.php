@@ -12,7 +12,7 @@ class Routine extends Model
         'student_class_id',
         'subject_id',
         'sub_subject_id',
-        'day',
+        'day_id',
         'date',
         'starting_time',
         'ending_time',
