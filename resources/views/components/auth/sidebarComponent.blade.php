@@ -16,9 +16,11 @@
                     </a>
                     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{url('/class/lists')}}">Class Lists</a>
-                            <a class="nav-link" href="{{url('/subject/lists')}}">Subject Lists</a>
-                            <a class="nav-link" href="{{url('/exam/schedule/lists')}}">Exam Lists</a>
+                            <a class="nav-link" href="{{url('/days/lists')}}" target="_blank">Day Lists</a>
+                            <a class="nav-link" href="{{url('/class/lists')}}" target="_blank">Class Lists</a>
+                            <a class="nav-link" href="{{url('/subject/lists')}}" target="_blank">Subject Lists</a>
+                            <a class="nav-link" href="{{url('/exam/schedule/lists')}}" target="_blank">Exam Lists</a>
+                            <a class="nav-link" href="{{url('/class/routine')}}" target="_blank">Class Routine</a>
                             <a class="nav-link" href="#">Mark Entry</a>
                             <a class="nav-link" href="#">Ranking</a>
                             <a class="nav-link" href="#">Summary(Pass/Fail)</a>

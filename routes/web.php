@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoutineController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DayController;
 use App\Http\Controllers\SubSubjectController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\StudentClassController;
@@ -18,6 +19,7 @@ Route::post('/user-login', [UserController::class, 'userLogin']);
 
 
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
+    Route::get('/days/lists', [DayController::class, 'day_lists_page']);
     Route::get('/class/lists', [StudentClassController::class, 'student_class']);
     Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
     Route::get('/class/routine', [RoutineController::class, 'class_routine_lists']);
@@ -28,6 +30,15 @@ Route::post('/user-login', [UserController::class, 'userLogin']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    //day route
+    Route::get('/day-lists', [DayController::class, 'day_lists']);
+    Route::post('/create-day-post', [DayController::class, 'store']);
+    Route::post('/day-delete-by-id', [DayController::class, 'day_delete']);
+    Route::post('/day-details-by-id', [DayController::class, 'day_details_by_id']);
+    Route::post('/day-update-by-id', [DayController::class, 'day_update_by_id']);
+
+
     //class routes
     Route::get('/student-class-lists', [StudentClassController::class, 'student_class_lists']);
     Route::post('/student-class-post', [StudentClassController::class, 'student_class_post']);

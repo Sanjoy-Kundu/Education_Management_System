@@ -1,0 +1,9 @@
+@extends('layouts.dashboard')
+@section('content')
+   @include('components.auth.navbarComponent') 
+   @include('components.auth.sidebarComponent')
+   @include('components.auth.day.dayComponent')
+   @include('components.auth.footerComponent')
+   @include('components.auth.day.dayCreateComponent')
+   @include('components.auth.day.dayEditComponent')
+@endsection
