@@ -116,6 +116,28 @@ class RoutineController extends Controller
 
 
     /**
+     * Routine lists by class id
+     */
+    public function routine_lists_by_class(Request $request)
+    {
+        try{
+            $class_id = $request->student_class_id;
+            $existsRoutine = Routine::where('student_class_id', $class_id)->with(['className', 'subjectName', 'subjectPaper', 'day'])->get();
+            return response()->json(['status' => 'success', 'routines' => $existsRoutine]);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong: ' . $ex->getMessage()]);
+        }
+    }
+
+
+
+
+
+
+
+
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Routine $routine)
@@ -138,4 +160,12 @@ class RoutineController extends Controller
     {
         //
     }
+
+
+
+
+
+
+
+
 }

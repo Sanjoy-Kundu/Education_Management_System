@@ -26,10 +26,10 @@ class Subject extends Model
         return $this->hasMany(ExamSchedule::class);
     }
 
-
-
     public function subSubjects()
     {
         return $this->hasMany(SubSubject::class);
     }
+
+
 }
