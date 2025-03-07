@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/subject-papers-by-subject', [RoutineController::class, 'getSubjectPapersBySubject']);
     Route::post('/routine-create', [RoutineController::class, 'routine_create']);
     Route::post('/routine-lists-by-class-id', [RoutineController::class, 'routine_lists_by_class']);
+    Route::post('/routine-delete-by-id', [RoutineController::class, 'routine_delete_by_id']);
 
 });
 

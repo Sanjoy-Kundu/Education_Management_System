@@ -68,28 +68,29 @@
                             <h5>Routine Lists of Class 6</h5>
                         </div>
                         <div class="card-body row g-3">
-                           <div class="col-md-12 col-sm-12 col-xs-12 col-xl-12">
-                            <div class="col-md-2 mb-3">
-                                <label class="form-label">Filter By Day</label>
-                                <select class="form-select routine-subject" aria-label="Default select example"
-                                    name="day_id" id="filterByDay">
-                                </select>
-                                <span id="routineDayError" class="text-danger"></span>
+                            <div class="col-md-12 col-sm-12 col-xs-12 col-xl-12">
+                                <div class="col-md-2 mb-3">
+                                    <label class="form-label">Filter By Day</label>
+                                    <select class="form-select routine-subject" aria-label="Default select example"
+                                        name="day_id" id="filterByDay">
+                                    </select>
+                                    <span id="routineDayError" class="text-danger"></span>
+                                </div>
+                                <table class="table table-bordered" id="routineTableParent">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Day</th>
+                                            <th scope="col">Subject Name</th>
+                                            <th scope="col">Subject Paper</th>
+                                            <th scope="col">Class Time</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="routineTableBody">
+                                    </tbody>
+                                </table>
+
                             </div>
-                              <table class="table table-bordered" id="routineTableParent">
-                                <thead>
-                                  <tr>
-                                    <th scope="col">Day</th>
-                                    <th scope="col">Subject Name</th>
-                                    <th scope="col">Subject Paper</th>
-                                    <th scope="col">Class Time</th>
-                                  </tr>
-                                </thead>
-                                <tbody id="routineTableBody">
-                                </tbody>
-                              </table>
-                         
-                           </div>
                         </div>
                     </div>
                 </section>
@@ -103,9 +104,9 @@
 
 <script>
     // Function to initialize the routine component
-     async function fillRoutineComponent(student_class_id) {
+    async function fillRoutineComponent(student_class_id) {
         document.getElementById('student_class_id').value = student_class_id;
-      
+
         await getUploadedRoutinelist(student_class_id);
         const selectElement = document.querySelector("#routineSubjectSelect");
         if (selectElement) {
@@ -127,7 +128,7 @@
 
 
             const daySelect = document.getElementById('routineDaySelect');
-         
+
 
             daySelect.innerHTML = '';
 
@@ -169,11 +170,11 @@
             // Check if the response contains data
             if (res.data.dayLists.length > 0) {
                 let parent = document.getElementById('filterByDay');
-                parent.innerHTML = ''; 
+                parent.innerHTML = '';
 
                 // Add a default option
                 let defaultOption = document.createElement('option');
-                defaultOption.value = ''; 
+                defaultOption.value = '';
                 defaultOption.textContent = 'Select a Day'; //
                 parent.appendChild(defaultOption);
 
@@ -181,7 +182,7 @@
                 res.data.dayLists.forEach(day => {
                     let option = document.createElement('option');
                     option.value = day.id;
-                    option.textContent = day.name; 
+                    option.textContent = day.name;
                     parent.appendChild(option);
                 });
             } else {
@@ -298,10 +299,13 @@
         }
     }
 
+
+    let routineTable;
     // Handle form submission
     async function onRoutineSubmit(event) {
         event.preventDefault();
 
+        // Clear error messages and reset border colors
         document.getElementById('routineSubjectError').innerText = '';
         document.getElementById('routineSubjectPaperError').innerText = '';
         document.getElementById('routineDayError').innerText = '';
@@ -309,7 +313,6 @@
         document.getElementById('routineStartingTimeError').innerText = '';
         document.getElementById('routineEndingTimeError').innerText = '';
 
-        //initilize border color 
         document.getElementById('routineSubjectSelect').style.borderColor = '';
         document.getElementById('routineSubjectPaperSelect').style.borderColor = '';
         document.getElementById('routineDaySelect').style.borderColor = '';
@@ -317,6 +320,7 @@
         document.getElementById('startingTime').style.borderColor = '';
         document.getElementById('endingTime').style.borderColor = '';
 
+        // Get form values
         let student_class_id = document.getElementById('student_class_id').value;
         let subject_id = document.getElementById('routineSubjectSelect').value;
         let sub_subject_id = document.getElementById('routineSubjectPaperSelect').value;
@@ -325,6 +329,7 @@
         let starting_time = document.getElementById('startingTime').value;
         let ending_time = document.getElementById('endingTime').value;
 
+        // Validate form inputs
         let isError = false;
         if (subject_id == '') {
             document.getElementById('routineSubjectSelect').style.borderColor = 'red';
@@ -359,10 +364,8 @@
 
         if (isError) return;
 
-
-
         let data = {
-            student_class_id:student_class_id,
+            student_class_id: student_class_id,
             subject_id: subject_id,
             sub_subject_id: sub_subject_id,
             day_id: day_id,
@@ -371,102 +374,183 @@
             ending_time: ending_time
         };
 
-      
+        try {
+            let res = await axios.post('/routine-create', data);
 
-        try{
-            let res = await axios.post('/routine-create', data)
-            if(res.data.status === 'success'){
-                await getUploadedRoutinelist(student_class_id);
+            if (res.data.status === 'success') {
                 Swal.fire({
-                title: res.data.message,
-                icon: "success",
-                draggable: true,
-                timer: 1500
+                    title: res.data.message,
+                    icon: "success",
+                    timer: 1500
                 });
-                
-            document.getElementById('routineSubjectSelect').value = '';
-            document.getElementById('routineSubjectPaperSelect').value = '';
-            document.getElementById('routineDaySelect').value = '';
-            document.getElementById('routineDate').value = '';
-            document.getElementById('startingTime').value = '';
-            document.getElementById('endingTime').value = '';
-            }else if(res.data.status === 'exists'){
+
+                // Clear form inputs
+                document.getElementById('routineSubjectSelect').value = '';
+                document.getElementById('routineSubjectPaperSelect').value = '';
+                document.getElementById('routineDaySelect').value = '';
+                document.getElementById('routineDate').value = '';
+                document.getElementById('startingTime').value = '';
+                document.getElementById('endingTime').value = '';
+
+                if (student_class_id) {
+                    await getUploadedRoutinelist(student_class_id);
+                } else {
+                    console.error("Student Class ID is missing!");
+                }
+            } else if (res.data.status === 'exists') {
                 Swal.fire({
-                title: res.data.message,
-                icon: "warning",
-                draggable: true,
-                timer: 7500
+                    title: res.data.message,
+                    icon: "warning",
+                    timer: 3000
                 });
-            }else{
+            } else {
                 console.log(res.data.message);
             }
-        }catch(error){
-            console.log("error",error);
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to submit routine data.",
+                icon: "error",
+                timer: 3000
+            });
         }
     }
 
 
- //routine list show component working not good
- 
-    async function getUploadedRoutinelist(id){
-     try{
+    // Routine list function
+    async function getUploadedRoutinelist(id) {
+        try {
+            let tableBody = $('#routineTableBody');
+            let res = await axios.post('/routine-lists-by-class-id', {
+                student_class_id: id
+            });
 
-        let tableBody = $('#routineTableBody');
-        tableBody.empty();
-
-        let data = {student_class_id:id};
-        let res = await axios.post('/routine-lists-by-class-id',data);
-        if(res.data.status === 'success'){
-            let lenght = res.data.routines.length;
-            if(lenght > 0){
+            if (res.data.status === 'success') {
                 let routines = res.data.routines;
-                routines.forEach((routine)=>{
-                    console.log(routine.ending_time);
-                    let startingTime = routine.starting_time;
-                    let endingTime = routine.ending_time;
-                    let timeSlot = startingTime+'-'+endingTime;
-                    let day = routine.day.name;
-                    let subject = routine.subject_name.name?routine.subject_name.name:''; 
-                    let paper = routine.subject_paper.sub_subject_name === 'null'?'N/A':routine.subject_paper.sub_subject_name;
 
-                    let row = `
-                    <tr>
-                        <td>${day}</td>
-                        <td>${subject}</td>
-                        <td>${paper}</td>
-                        <td>${timeSlot}</td>
-                    </tr>
-                    `
-                    tableBody.append(row);
-                })
+                if (routineTable) {
+                    routineTable.clear().destroy();
+                }
+
+                tableBody.empty();
+
+                if (routines.length > 0) {
+                    routines.forEach((routine) => {
+                        console.log(routine);
+                        let startingTime = routine.starting_time;
+                        let endingTime = routine.ending_time;
+                        let timeSlot = `${startingTime} - ${endingTime}`;
+                        let day = routine.day.name;
+                        let subject = routine.subject_name.name ? routine.subject_name.name : '';
+                        let paper = routine.subject_paper.sub_subject_name === 'null' ? 'N/A' : routine
+                            .subject_paper.sub_subject_name;
+
+                        let row = `
+                        <tr>
+                            <td>${day}</td>
+                            <td>${subject}</td>
+                            <td>${paper}</td>
+                            <td>${timeSlot}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <button type="button" class="btn btn-danger routineDeleteBtn" data-id='${routine.id}'>Delete</button>
+                                    <button type="button" class="btn btn-success routineUpdateBtn" data-id='${routine.id}'>Update</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                        tableBody.append(row);
+                    });
 
 
 
 
-                    // Initialize DataTables
-                    $('#routineTableParent').DataTable({
-                    paging: true,
-                    searching: true, 
-                    ordering: true, 
-                    info: true, 
-                    responsive: true 
-                });
-            }else{
-                console.log(lenght);
+                    //routine delete by id 
+                    // $('.routineDeleteBtn').click(async function() {
+                    //     let id = $(this).data('id'); // রুটিনের ID পেতে
+                    //     let res = await axios.post('/routine-delete-by-id',{id:id});
+                    //     console.log(res.data);
+                    //     // SweetAlert কনফার্মেশন ডায়ালগ
+                    //     // Swal.fire({
+                    //     //     title: 'Are you sure?',
+                    //     //     text: "You won't be able to revert this!",
+                    //     //     icon: 'warning',
+                    //     //     showCancelButton: true,
+                    //     //     confirmButtonColor: '#3085d6',
+                    //     //     cancelButtonColor: '#d33',
+                    //     //     confirmButtonText: 'Yes, delete it!'
+                    //     // }).then(async (result) => {
+                    //     //     if (result.isConfirmed) {
+                    //     //         try {
+                    //     //             let res = await axios.post('/routine-delete-by-id', {id: id});
+                    //     //             if (res.data.status === 'success') {
+                    //     //                 Swal.fire({
+                    //     //                     title: 'Deleted!',
+                    //     //                     text: res.data.message,
+                    //     //                     icon: 'success',
+                    //     //                     timer: 1500
+                    //     //                 });
+                    //     //                 let student_class_id = document.getElementById('student_class_id').value;
+                    //     //                 await getUploadedRoutinelist(student_class_id);
+                    //     //             } else {
+                                      
+                    //     //                 Swal.fire({
+                    //     //                     title: 'Error!',
+                    //     //                     text: res.data.message,
+                    //     //                     icon: 'error',
+                    //     //                     timer: 3000
+                    //     //                 });
+                    //     //             }
+                    //     //         } catch (error) {
+                    //     //             console.error("Error:", error);
+                    //     //             Swal.fire({
+                    //     //                 title: 'Error!',
+                    //     //                 text: 'Failed to delete routine.',
+                    //     //                 icon: 'error',
+                    //     //                 timer: 3000
+                    //     //             });
+                    //     //         }
+                    //     //     }
+                    //     // });
+                    // });
+
+
+                    //routine update by id
+                    $('.routineUpdateBtn').click(function() {
+                        let id = $(this).data('id');
+                        console.log(id);
+                    })
+
+
+                    routineTable = $('#routineTableParent').DataTable({
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        info: true,
+                        responsive: true
+                    });
+                } else {
+                    Swal.fire({
+                        title: "No Data!",
+                        text: "No routines found for this class.",
+                        icon: "info",
+                        timer: 3000
+                    });
+                }
+            } else {
+                console.log("Data not found.");
             }
-     
-
-        }else{
-            console.log("data not found");
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to load routine data.",
+                icon: "error",
+                timer: 3000
+            });
         }
-           
-     }catch(error){
-        console.error("error",error);
-     }
- 
-}
-
-
+    }
 </script>
 
 

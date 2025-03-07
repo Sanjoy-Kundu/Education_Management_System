@@ -148,6 +148,19 @@ class RoutineController extends Controller
 
 
 
+    //routine delete by-id 
+    public function routine_delete_by_id($id){
+        try{
+            $routine = Routine::find($id);
+            if(!$routine){
+                return response()->json(['status' => 'error', 'message' => 'Routine not found']);
+            }
+            $routine->delete();
+            return response()->json(['status' => 'success', 'message' => 'Routine deleted successfully']);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong: ' . $ex->getMessage()]);
+        }
+    }
 
 
 
