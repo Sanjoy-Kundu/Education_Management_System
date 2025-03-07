@@ -384,7 +384,6 @@
                 timer: 1500
                 });
                 
-            document.getElementById('student_class_id').value  = '';
             document.getElementById('routineSubjectSelect').value = '';
             document.getElementById('routineSubjectPaperSelect').value = '';
             document.getElementById('routineDaySelect').value = '';
@@ -427,8 +426,8 @@
                     let endingTime = routine.ending_time;
                     let timeSlot = startingTime+'-'+endingTime;
                     let day = routine.day.name;
-                    let subject = routine.subject_name.name; 
-                    let paper = routine.subject_paper.sub_subject_name;
+                    let subject = routine.subject_name.name?routine.subject_name.name:''; 
+                    let paper = routine.subject_paper.sub_subject_name === 'null'?'N/A':routine.subject_paper.sub_subject_name;
 
                     let row = `
                     <tr>

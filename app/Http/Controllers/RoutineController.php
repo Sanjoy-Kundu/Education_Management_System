@@ -82,6 +82,23 @@ class RoutineController extends Controller
                 return response()->json(["status" => "exists", "message" => "Routine already exists. Upload new data."]);
             }
 
+         // Check for overlapping time slots
+        $overlappingRoutine = Routine::where('student_class_id', $request->student_class_id)
+        ->where('day_id', $request->day_id)
+        ->where(function ($query) use ($request) {
+                $query->whereBetween('starting_time', [$request->starting_time, $request->ending_time])
+                     ->orWhereBetween('ending_time', [$request->starting_time, $request->ending_time])
+                     ->orWhere(function ($query) use ($request) {
+                         $query->where('starting_time', '<', $request->starting_time)
+                               ->where('ending_time', '>', $request->ending_time);
+                  });
+         })->first();
+
+         if($overlappingRoutine){
+            return response()->json(["status" => "exists", "message" => "A class already exists in this time range. Please change the time."]);
+         }
+
+
             Routine::create([
                 'student_class_id' => $request->student_class_id,
                 'subject_id' => $request->subject_id,
