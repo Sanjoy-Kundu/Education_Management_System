@@ -149,9 +149,13 @@ class RoutineController extends Controller
 
 
     //routine delete by-id 
-    public function routine_delete_by_id($id){
+    public function routine_delete_by_id(Request $request){
+        $request->validate([
+            'id' => 'required|integer|exists:routines,id'
+        ]);
         try{
-            $routine = Routine::find($id);
+
+            $routine = Routine::find($request->id);
             if(!$routine){
                 return response()->json(['status' => 'error', 'message' => 'Routine not found']);
             }

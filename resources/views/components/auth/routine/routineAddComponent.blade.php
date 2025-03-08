@@ -467,54 +467,52 @@
 
 
                     //routine delete by id 
-                    // $('.routineDeleteBtn').click(async function() {
-                    //     let id = $(this).data('id'); // রুটিনের ID পেতে
-                    //     let res = await axios.post('/routine-delete-by-id',{id:id});
-                    //     console.log(res.data);
-                    //     // SweetAlert কনফার্মেশন ডায়ালগ
-                    //     // Swal.fire({
-                    //     //     title: 'Are you sure?',
-                    //     //     text: "You won't be able to revert this!",
-                    //     //     icon: 'warning',
-                    //     //     showCancelButton: true,
-                    //     //     confirmButtonColor: '#3085d6',
-                    //     //     cancelButtonColor: '#d33',
-                    //     //     confirmButtonText: 'Yes, delete it!'
-                    //     // }).then(async (result) => {
-                    //     //     if (result.isConfirmed) {
-                    //     //         try {
-                    //     //             let res = await axios.post('/routine-delete-by-id', {id: id});
-                    //     //             if (res.data.status === 'success') {
-                    //     //                 Swal.fire({
-                    //     //                     title: 'Deleted!',
-                    //     //                     text: res.data.message,
-                    //     //                     icon: 'success',
-                    //     //                     timer: 1500
-                    //     //                 });
-                    //     //                 let student_class_id = document.getElementById('student_class_id').value;
-                    //     //                 await getUploadedRoutinelist(student_class_id);
-                    //     //             } else {
-                                      
-                    //     //                 Swal.fire({
-                    //     //                     title: 'Error!',
-                    //     //                     text: res.data.message,
-                    //     //                     icon: 'error',
-                    //     //                     timer: 3000
-                    //     //                 });
-                    //     //             }
-                    //     //         } catch (error) {
-                    //     //             console.error("Error:", error);
-                    //     //             Swal.fire({
-                    //     //                 title: 'Error!',
-                    //     //                 text: 'Failed to delete routine.',
-                    //     //                 icon: 'error',
-                    //     //                 timer: 3000
-                    //     //             });
-                    //     //         }
-                    //     //     }
-                    //     // });
-                    // });
-
+                    $('.routineDeleteBtn').click(async function() {
+                        let id = $(this).data('id'); 
+                        // SweetAlert
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    let res = await axios.post('/routine-delete-by-id', {
+                                        id: id
+                                    });
+                                    if (res.data.status === 'success') {
+                                        Swal.fire({
+                                            title: 'Deleted!',
+                                            text: res.data.message,
+                                            icon: 'success',
+                                            timer: 1500
+                                        });
+                                        let student_class_id = document.getElementById('student_class_id').value;
+                                        await getUploadedRoutinelist(student_class_id); 
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: res.data.message,
+                                            icon: 'error',
+                                            timer: 3000
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.error("Error:", error);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Failed to delete routine.',
+                                        icon: 'error',
+                                        timer: 3000
+                                    });
+                                }
+                            }
+                        });
+                    });
 
                     //routine update by id
                     $('.routineUpdateBtn').click(function() {
