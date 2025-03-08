@@ -437,7 +437,6 @@
 
                 if (routines.length > 0) {
                     routines.forEach((routine) => {
-                        console.log(routine);
                         let startingTime = routine.starting_time;
                         let endingTime = routine.ending_time;
                         let timeSlot = `${startingTime} - ${endingTime}`;
@@ -455,7 +454,7 @@
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                     <button type="button" class="btn btn-danger routineDeleteBtn" data-id='${routine.id}'>Delete</button>
-                                    <button type="button" class="btn btn-success routineUpdateBtn" data-id='${routine.id}'>Update</button>
+                                    <button type="button" class="btn btn-success routineViewBtn" data-id='${routine.id}'>Update</button>
                                 </div>
                             </td>
                         </tr>
@@ -515,9 +514,11 @@
                     });
 
                     //routine update by id
-                    $('.routineUpdateBtn').click(function() {
+                    $('.routineViewBtn').click(async function() {
                         let id = $(this).data('id');
-                        console.log(id);
+                        await viewRoutineComponent(id);
+                        $('#routineViewModal').modal('show');
+
                     })
 
 

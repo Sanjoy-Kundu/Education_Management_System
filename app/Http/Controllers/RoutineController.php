@@ -174,9 +174,34 @@ class RoutineController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Routine $routine)
+    public function routine_detail_by_id(Request $request)
     {
-        //
+        try{
+            $id = $request->id;
+            $routineExists = Routine::find($id);
+            if(!$routineExists){
+                return response()->json(['status' => 'error', 'message' => 'Routine not found']);
+            }
+            return response()->json(['status' => 'success', 'data' => $routineExists]);
+            /*
+            {
+                "id": 1,
+                "subject_id": 1,
+                "sub_subject_id": 1,
+                "student_class_id": 1,
+                "day_id": 1,
+                "date": "2025-10-01",
+                "starting_time": "10:00:00",
+                "ending_time": "10:45:00",
+                "created_at": "2025-03-07T10:12:29.000000Z",
+                "updated_at": "2025-03-07T10:12:29.000000Z"
+            }
+          */
+          //show the view code ...
+
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong: ' . $ex->getMessage()]);
+        }
     }
 
     /**

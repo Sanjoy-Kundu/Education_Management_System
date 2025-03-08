@@ -5,4 +5,5 @@
 @include('components.auth.routine.routineListComponent')
 @include('components.auth.footerComponent')
 @include('components.auth.routine.routineAddComponent')
+@include('components.auth.routine.routineViewComponent')
 @endsection
