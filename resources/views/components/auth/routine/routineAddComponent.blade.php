@@ -537,14 +537,6 @@
                     })
 
 
-
-
-
-
-
-
-
-
                     // Reinitialize DataTable
                     routineTable = $('#routineTableParent').DataTable({
                         paging: true,

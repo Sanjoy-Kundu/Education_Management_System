@@ -5,7 +5,7 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-1" id="routineModalLabel"><span class="text-primary">UPDATE YOUR</span> <span
                         class="text-danger">CLASS ROUTINE</span> OF CLASS </h1>
-                <p><input type="number" name="id" hidden class="form-control w-50" id="view_routine_id">
+                <p><input type="number" name="id"  class="form-control w-50" id="view_routine_id">
                 <p><input type="number" name="student_class_id" class="form-control w-50"
                         id="view_update_student_class_id">
                 </p>
@@ -75,33 +75,32 @@
 <script>
     // Function to load routine details into the modal
     async function viewRoutineComponent(id) {
-        let routineIdElement = document.getElementById('routine_id');
-        try {
-            let res = await axios.post('/routine-detail-by-id', {
-                id: id
-            });
-            if (res.data.status == 'success') {
-                let routine = res.data.data;
-                //set routine id and student class id
-                document.getElementById('view_routine_id').value = routine.id;
-                document.getElementById('view_update_student_class_id').value = routine.student_class_id;
-
-                document.getElementById('updateRoutineDate').value = routine.date;
-                document.getElementById('updateStartingTime').value = routine.starting_time;
-                document.getElementById('updateEndingTime').value = routine.ending_time;
-                let student_class_id = routine.student_class_id;
-                let subject_id = routine.subject_id;
-                let subject_paper_id = routine.sub_subject_id;
-                let dayId = routine.day_id;
-                await viewRoutineDayLists(dayId);
-                await routinegetSubjectLists_name_by_subject_id(student_class_id, subject_id, subject_paper_id);
-            } else {
-                console.error('One or more form elements not found!');
-            }
-        } catch (error) {
-            console.log('error', error);
+    try {
+        let res = await axios.post('/routine-detail-by-id', { id: id });
+        if (res.data.status == 'success') {
+            let routine = res.data.data;
+            console.log(routine);
+            // console.log(routine.date);
+            // console.log(routine.starting_time);
+            // console.log(routine.ending_time);
+            document.getElementById('view_routine_id').value = routine.id;
+            document.getElementById('view_update_student_class_id').value = routine.student_class_id;
+            document.getElementById('updateRoutineDate').value = routine.date;
+            document.getElementById('updateStartingTime').value = routine.starting_time;
+            document.getElementById('updateEndingTime').value = routine.ending_time;;
+        
+            let subject_paper_id = routine.sub_subject_id; 
+            await viewRoutineDayLists(routine.day_id);
+            await routinegetSubjectLists_name_by_subject_id(
+                routine.student_class_id,
+                routine.subject_id,
+                subject_paper_id
+            );
         }
+    } catch (error) {
+        console.error('Error loading routine:', error);
     }
+}
 
 
 
@@ -125,6 +124,7 @@
                 option.value = '';
                 option.textContent = 'No data found';
                 daySelect.appendChild(option);
+                return;
             }
 
             let placeholderOption = document.createElement('option');
@@ -137,7 +137,7 @@
                 let option = document.createElement('option');
                 option.value = element.id;
                 option.textContent = element.name;
-                if (element.id == dayId) {
+                if (element.id.toString() === dayId.toString()) {
                     option.selected = true;
                 }
                 daySelect.appendChild(option);
@@ -160,7 +160,8 @@
                 return;
             }
 
-            selectElement.innerHTML = `<option value="">Choose your subject</option>`;
+           
+            selectElement.innerHTML = '<option value="">Loading...</option>';
 
             let res = await axios.post('/subject-lists-by-class-name-routine', {
                 student_class_id: student_class_id
@@ -168,33 +169,45 @@
 
             let lists = res.data.subjects;
 
+         
+            selectElement.innerHTML = '<option value="">Choose your subject</option>';
+
             if (lists.length === 0) {
-                selectElement.innerHTML = '<option>No Data Found</option>';
+                selectElement.innerHTML = '<option value="">No Data Found</option>';
             } else {
+             
                 lists.forEach(element => {
-                    //console.log(element);
                     let option = document.createElement("option");
                     option.value = element.id;
                     option.textContent = element.name;
-                    if (element.id === subject_id) {
+                    if (element.id.toString() === subject_id?.toString()) { 
                         option.selected = true;
                     }
                     selectElement.appendChild(option);
                 });
             }
 
-            // Subject change event
-            selectElement.addEventListener("change", function() {
-                let subjectId = this.value;
+         
+            const handleSubjectChange = () => {
+                let subjectId = selectElement.value;
                 viewGetSubjectPapers(subjectId, null);
-            });
+            };
 
+            selectElement.removeEventListener("change", handleSubjectChange);
+            selectElement.addEventListener("change", handleSubjectChange);
+
+        
             if (subject_id) {
-                await viewGetSubjectPapers(subject_id, subject_paper_id);
+                try {
+                    await viewGetSubjectPapers(subject_id, subject_paper_id);
+                } catch (error) {
+                    console.error("Error loading subject papers:", error);
+                }
             }
 
         } catch (error) {
             console.error('Error fetching subject lists:', error);
+            selectElement.innerHTML = '<option value="">Error loading data</option>';
         }
     }
 
@@ -202,6 +215,7 @@
     async function viewGetSubjectPapers(subjectId, subject_paper_id) {
         try {
             let selectElement = document.getElementById('updateRoutineSubjectPaperSelect');
+            selectElement.innerHTML = '<option value="">Loading...</option>';
 
             if (!subjectId) {
                 selectElement.innerHTML = '<option value="">Please Select Subject</option>';
@@ -211,133 +225,141 @@
             let res = await axios.post('/subject-papers-by-subject-id', {
                 subject_id: subjectId
             });
-
             let papers = res.data.papers;
-
-            selectElement.innerHTML = ""; // Clear previous data
+            selectElement.innerHTML = "";
 
             if (papers.length === 0) {
-                selectElement.innerHTML =
-                    '<option value="none" selected style="color: red;">No Papers Found</option>';
+                selectElement.innerHTML = '<option value="" selected style="color: red;">No Papers Found</option>';
             } else {
                 const placeholderOption = document.createElement("option");
                 placeholderOption.value = "";
                 placeholderOption.textContent = "Select your paper";
                 selectElement.appendChild(placeholderOption);
 
+                let found = false;
                 papers.forEach(element => {
                     let option = document.createElement("option");
                     option.value = element.id;
-                    option.textContent = element.sub_subject_name === 'null' ? 'No paper found' : element
+                    const paperName = element.sub_subject_name === 'null' ? 'No paper found' : element
                         .sub_subject_name;
+                    option.textContent = paperName;
 
-                    if (option.textContent === 'No paper found') {
-                        option.selected = true;
+                    // Style and selection logic
+                    if (paperName === 'No paper found') {
                         option.disabled = true;
                         option.style.color = 'red';
                     } else {
-                        if (element.id == subject_paper_id) {
-                            option.selected = true;
-                        }
                         option.style.color = 'blue';
+                        if (element.id.toString() === subject_paper_id?.toString()) {
+                            option.selected = true;
+                            found = true;
+                        }
                     }
-
                     selectElement.appendChild(option);
                 });
+
+                if (!found) selectElement.value = "";
             }
+
         } catch (error) {
             console.error('Error fetching subject papers:', error);
+            selectElement.innerHTML = '<option value="" style="color: red;">Error loading papers</option>';
         }
     }
     /* ending part*/
 
     /* routine update part start*/
     async function onRoutineUpdate(event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    // Token নেওয়া
-    let token = localStorage.getItem('authToken'); 
-    if (!token) {
-        Swal.fire({
-            title: "Authentication Error!",
-            text: "You are not authenticated. Please log in again.",
-            icon: "warning",
-            confirmButtonText: "OK"
-        });
-        return;
-    }
-  
+   
+        let token = localStorage.getItem('authToken');
+        if (!token) {
+            Swal.fire({
+                title: "Authentication Error!",
+                text: "You are not authenticated. Please log in again.",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
 
-  
-    let id = document.getElementById('view_routine_id').value;
-    let student_class_id = document.getElementById('view_update_student_class_id').value;
-    let subject_id = document.getElementById('updateRoutineSubjectSelect').value;
-    let sub_subject_id = document.getElementById('updateRoutineSubjectPaperSelect').value;
-    let day_id = document.getElementById('updateRoutineDaySelect').value;
-    let date = document.getElementById('updateRoutineDate').value;
-    let starting_time = document.getElementById('updateStartingTime').value;
-    let ending_time = document.getElementById('updateEndingTime').value;
+      
+        let id = document.getElementById('view_routine_id').value;
+        let student_class_id = document.getElementById('view_update_student_class_id').value;
+        let subject_id = document.getElementById('updateRoutineSubjectSelect').value;
+        let sub_subject_id = document.getElementById('updateRoutineSubjectPaperSelect').value;
+        let day_id = document.getElementById('updateRoutineDaySelect').value;
+        let date = document.getElementById('updateRoutineDate').value;
+        let starting_time = document.getElementById('updateStartingTime').value;
+        let ending_time = document.getElementById('updateEndingTime').value;
 
     
-    if (!id || !subject_id || !date || !starting_time || !ending_time) {
-        Swal.fire({
-            title: "Validation Error!",
-            text: "Please fill in all required fields.",
-            icon: "error",
-            confirmButtonText: "OK"
-        });
-        return;
-    }
-
-    let data = {
-        id:id,
-        student_class_id:student_class_id,
-        subject_id:subject_id,
-        sub_subject_id:subject_id,
-        day_id:day_id,
-        date:date,
-        starting_time:starting_time,
-        ending_time:ending_time
-    };
-
-    console.log("Submitting Data:", data); 
-
-    try {
-        let res = await axios.post('/routine-update', data);
-
-        if (res.data.status === 'success') {
+        if (!subject_id || !date || !starting_time || !ending_time) {
             Swal.fire({
-                title: "Success!",
-                text: res.data.message,
-                icon: "success",
+                title: "Validation Error!",
+                text: "Please fill in all required fields.",
+                icon: "error",
                 confirmButtonText: "OK"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let modal = document.getElementById('routineViewModal');
-                    let modalInstance = bootstrap.Modal.getInstance(modal);
-                    modalInstance.hide();
+            });
+            return;
+        }
+
+   
+        let data = {
+            id: id,
+            student_class_id: student_class_id,
+            subject_id: subject_id,
+            sub_subject_id: sub_subject_id, 
+            day_id: day_id,
+            date: date,
+            starting_time: starting_time,
+            ending_time: ending_time
+        };
+
+        try {
+      
+            let res = await axios.post('/routine-update', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
             });
-            await getUploadedRoutinelist(student_class_id)
-        }else{
+
+       
+            if (res.data.status === 'success') {
+                Swal.fire({
+                    title: "Success!",
+                    text: res.data.message,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let modal = document.getElementById('routineViewModal');
+                        let modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                    }
+                });
+                await getUploadedRoutinelist(student_class_id); // ✅ await যোগ
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: res.data.message,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        } catch (error) {
+ 
+            let errorMessage = error.response?.data?.message || "Something went wrong";
+            console.error("Error updating routine:", error);
             Swal.fire({
-                title: "Error!",
-                text: res.data.message,
+                title: "Server Error!",
+                text: errorMessage,
                 icon: "error",
                 confirmButtonText: "OK"
             });
         }
-    } catch (error) {
-        console.error("Error updating routine:", error);
-        Swal.fire({
-            title: "Server Error!",
-            text: "Something went wrong. Please try again later.",
-            icon: "error",
-            confirmButtonText: "OK"
-        });
     }
-}
-
     /* routine update part end*/
 </script>
 <!-- Bootstrap Icons CDN -->
