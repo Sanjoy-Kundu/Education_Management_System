@@ -139,7 +139,19 @@ class RoutineController extends Controller
     {
         try{
             $class_id = $request->student_class_id;
-            $existsRoutine = Routine::where('student_class_id', $class_id)->with(['className', 'subjectName', 'subjectPaper', 'day'])->get();
+            $day_id = $request->day_id;
+            $existsRoutineQuery = Routine::where('student_class_id', $class_id)->with(['className', 'subjectName', 'subjectPaper', 'day']);
+
+            if ($day_id) {
+                $existsRoutineQuery->where('day_id', $day_id);
+            }
+
+            $existsRoutine = $existsRoutineQuery->get();
+
+            if ($existsRoutine->isEmpty()) {
+                return response()->json(['status' => 'error','message' => 'No routines found for the selected criteria.'], 404);
+            }
+
             return response()->json(['status' => 'success', 'routines' => $existsRoutine]);
         }catch(Exception $ex){
             return response()->json(['status' => 'error', 'message' => 'Something went wrong: ' . $ex->getMessage()]);

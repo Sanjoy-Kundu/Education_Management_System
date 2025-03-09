@@ -403,7 +403,7 @@
                 // Add a default option
                 let defaultOption = document.createElement('option');
                 defaultOption.value = '';
-                defaultOption.textContent = 'Select a Day'; //
+                defaultOption.textContent = 'Select a Day'; // Default option
                 parent.appendChild(defaultOption);
 
                 // Loop through the day lists and create options
@@ -412,6 +412,15 @@
                     option.value = day.id;
                     option.textContent = day.name;
                     parent.appendChild(option);
+                });
+
+                // Add event listener to the select element
+                parent.addEventListener('change', function() {
+                    let dayId = this.value;
+                    let studentClassId = document.getElementById('student_class_id').value;
+
+                    // Call the function to fetch routines
+                    getUploadedRoutinelist(studentClassId, dayId);
                 });
             } else {
                 console.error("No data found in the response.");
@@ -426,20 +435,21 @@
 
 
     // Routine list function
-    async function getUploadedRoutinelist(id) {
+    async function getUploadedRoutinelist(studentClassId, dayId = null) {
         try {
             let tableBody = $('#routineTableBody');
             let res = await axios.post('/routine-lists-by-class-id', {
-                student_class_id: id
+                student_class_id: studentClassId,
+                day_id: dayId // Pass day_id to backend
             });
 
             if (res.data.status === 'success') {
                 let routines = res.data.routines;
 
+                // Clear existing table data
                 if (routineTable) {
                     routineTable.clear().destroy();
                 }
-
                 tableBody.empty();
 
                 if (routines.length > 0) {
@@ -470,10 +480,8 @@
                     });
 
 
-
-
-                    //routine delete by id 
-                    $('.routineDeleteBtn').click(async function() {
+                      //routine delete by id 
+                      $('.routineDeleteBtn').click(async function() {
                         let id = $(this).data('id'); 
                         // SweetAlert
                         Swal.fire({
@@ -529,6 +537,15 @@
                     })
 
 
+
+
+
+
+
+
+
+
+                    // Reinitialize DataTable
                     routineTable = $('#routineTableParent').DataTable({
                         paging: true,
                         searching: true,
@@ -537,13 +554,31 @@
                         responsive: true
                     });
                 } else {
-                    Swal.fire({
-                        title: "No Data!",
-                        text: "No routines found for this class.",
-                        icon: "info",
-                        timer: 3000
-                    });
+                    // Show message if no data found
+                    if (dayId) {
+                        Swal.fire({
+                            title: "No Data!",
+                            text: "No routines found for the selected day.",
+                            icon: "info",
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "No Data!",
+                            text: "No routines found for this class.",
+                            icon: "info",
+                            timer: 3000
+                        });
+                    }
                 }
+            } else if (res.data.status === 'error') {
+                // Show backend error message
+                Swal.fire({
+                    title: "Error!",
+                    text: res.data.message, // Backend error message
+                    icon: "error",
+                    timer: 3000
+                });
             } else {
                 console.log("Data not found.");
             }
