@@ -160,38 +160,7 @@
     }
 
 
-    //getFilterByDay for listsing 
-    getFilterByDay();
-    async function getFilterByDay() {
-        try {
-            // Fetch the day lists from the backend
-            let res = await axios.get('/day-lists');
 
-            // Check if the response contains data
-            if (res.data.dayLists.length > 0) {
-                let parent = document.getElementById('filterByDay');
-                parent.innerHTML = '';
-
-                // Add a default option
-                let defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = 'Select a Day'; //
-                parent.appendChild(defaultOption);
-
-                // Loop through the day lists and create options
-                res.data.dayLists.forEach(day => {
-                    let option = document.createElement('option');
-                    option.value = day.id;
-                    option.textContent = day.name;
-                    parent.appendChild(option);
-                });
-            } else {
-                console.error("No data found in the response.");
-            }
-        } catch (error) {
-            console.error('Error fetching day lists:', error);
-        }
-    }
 
 
 
@@ -416,6 +385,44 @@
             });
         }
     }
+
+
+
+    //getFilterByDay for listsing 
+    getFilterByDay();
+    async function getFilterByDay() {
+        try {
+            // Fetch the day lists from the backend
+            let res = await axios.get('/day-lists');
+
+            // Check if the response contains data
+            if (res.data.dayLists.length > 0) {
+                let parent = document.getElementById('filterByDay');
+                parent.innerHTML = '';
+
+                // Add a default option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select a Day'; //
+                parent.appendChild(defaultOption);
+
+                // Loop through the day lists and create options
+                res.data.dayLists.forEach(day => {
+                    let option = document.createElement('option');
+                    option.value = day.id;
+                    option.textContent = day.name;
+                    parent.appendChild(option);
+                });
+            } else {
+                console.error("No data found in the response.");
+            }
+        } catch (error) {
+            console.error('Error fetching day lists:', error);
+        }
+    }
+
+
+
 
 
     // Routine list function

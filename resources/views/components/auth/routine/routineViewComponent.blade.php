@@ -5,9 +5,9 @@
             <div class="modal-header">
                 <h1 class="modal-title fs-1" id="routineModalLabel"><span class="text-primary">UPDATE YOUR</span> <span
                         class="text-danger">CLASS ROUTINE</span> OF CLASS </h1>
-                <p><input type="number" name="id" hidden class="form-control w-50" id="routine_id">
-                <p><input type="number" name="student_class_id" hidden class="form-control w-50"
-                        id="update_student_class_id">
+                <p><input type="number" name="id" hidden class="form-control w-50" id="view_routine_id">
+                <p><input type="number" name="student_class_id" class="form-control w-50"
+                        id="view_update_student_class_id">
                 </p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -82,7 +82,10 @@
             });
             if (res.data.status == 'success') {
                 let routine = res.data.data;
-                console.log(routine);
+                //set routine id and student class id
+                document.getElementById('view_routine_id').value = routine.id;
+                document.getElementById('view_update_student_class_id').value = routine.student_class_id;
+
                 document.getElementById('updateRoutineDate').value = routine.date;
                 document.getElementById('updateStartingTime').value = routine.starting_time;
                 document.getElementById('updateEndingTime').value = routine.ending_time;
@@ -91,7 +94,7 @@
                 let subject_paper_id = routine.sub_subject_id;
                 let dayId = routine.day_id;
                 await viewRoutineDayLists(dayId);
-                await routinegetSubjectLists_name_by_subject_id(student_class_id, subject_id,subject_paper_id);
+                await routinegetSubjectLists_name_by_subject_id(student_class_id, subject_id, subject_paper_id);
             } else {
                 console.error('One or more form elements not found!');
             }
@@ -148,7 +151,7 @@
 
     /* starting part*/
     // Get Subject List by Class ID
-    async function routinegetSubjectLists_name_by_subject_id(student_class_id, subject_id,subject_paper_id) {
+    async function routinegetSubjectLists_name_by_subject_id(student_class_id, subject_id, subject_paper_id) {
         try {
             let selectElement = document.getElementById('updateRoutineSubjectSelect');
 
@@ -173,7 +176,7 @@
                     let option = document.createElement("option");
                     option.value = element.id;
                     option.textContent = element.name;
-                    if(element.id === subject_id){
+                    if (element.id === subject_id) {
                         option.selected = true;
                     }
                     selectElement.appendChild(option);
@@ -183,7 +186,7 @@
             // Subject change event
             selectElement.addEventListener("change", function() {
                 let subjectId = this.value;
-                viewGetSubjectPapers(subjectId,null);
+                viewGetSubjectPapers(subjectId, null);
             });
 
             if (subject_id) {
@@ -196,7 +199,7 @@
     }
 
     // Get Subject Papers by Subject ID
-    async function viewGetSubjectPapers(subjectId,subject_paper_id) {
+    async function viewGetSubjectPapers(subjectId, subject_paper_id) {
         try {
             let selectElement = document.getElementById('updateRoutineSubjectPaperSelect');
 
@@ -225,14 +228,15 @@
                 papers.forEach(element => {
                     let option = document.createElement("option");
                     option.value = element.id;
-                    option.textContent = element.sub_subject_name === 'null'? 'No paper found': element.sub_subject_name;
+                    option.textContent = element.sub_subject_name === 'null' ? 'No paper found' : element
+                        .sub_subject_name;
 
                     if (option.textContent === 'No paper found') {
                         option.selected = true;
                         option.disabled = true;
                         option.style.color = 'red';
                     } else {
-                        if(element.id == subject_paper_id){
+                        if (element.id == subject_paper_id) {
                             option.selected = true;
                         }
                         option.style.color = 'blue';
@@ -245,8 +249,96 @@
             console.error('Error fetching subject papers:', error);
         }
     }
-
     /* ending part*/
+
+    /* routine update part start*/
+    async function onRoutineUpdate(event) {
+    event.preventDefault();
+
+    // Token নেওয়া
+    let token = localStorage.getItem('authToken'); 
+    if (!token) {
+        Swal.fire({
+            title: "Authentication Error!",
+            text: "You are not authenticated. Please log in again.",
+            icon: "warning",
+            confirmButtonText: "OK"
+        });
+        return;
+    }
+  
+
+  
+    let id = document.getElementById('view_routine_id').value;
+    let student_class_id = document.getElementById('view_update_student_class_id').value;
+    let subject_id = document.getElementById('updateRoutineSubjectSelect').value;
+    let sub_subject_id = document.getElementById('updateRoutineSubjectPaperSelect').value;
+    let day_id = document.getElementById('updateRoutineDaySelect').value;
+    let date = document.getElementById('updateRoutineDate').value;
+    let starting_time = document.getElementById('updateStartingTime').value;
+    let ending_time = document.getElementById('updateEndingTime').value;
+
+    
+    if (!id || !subject_id || !date || !starting_time || !ending_time) {
+        Swal.fire({
+            title: "Validation Error!",
+            text: "Please fill in all required fields.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+        return;
+    }
+
+    let data = {
+        id:id,
+        student_class_id:student_class_id,
+        subject_id:subject_id,
+        sub_subject_id:subject_id,
+        day_id:day_id,
+        date:date,
+        starting_time:starting_time,
+        ending_time:ending_time
+    };
+
+    console.log("Submitting Data:", data); 
+
+    try {
+        let res = await axios.post('/routine-update', data);
+
+        if (res.data.status === 'success') {
+            Swal.fire({
+                title: "Success!",
+                text: res.data.message,
+                icon: "success",
+                confirmButtonText: "OK"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let modal = document.getElementById('routineViewModal');
+                    let modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                }
+            });
+            await getUploadedRoutinelist(student_class_id)
+        }else{
+            Swal.fire({
+                title: "Error!",
+                text: res.data.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    } catch (error) {
+        console.error("Error updating routine:", error);
+        Swal.fire({
+            title: "Server Error!",
+            text: "Something went wrong. Please try again later.",
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+    }
+}
+
+    /* routine update part end*/
 </script>
 <!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">

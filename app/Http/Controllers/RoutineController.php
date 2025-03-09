@@ -183,20 +183,7 @@ class RoutineController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Routine not found']);
             }
             return response()->json(['status' => 'success', 'data' => $routineExists]);
-            /*
-            {
-                "id": 1,
-                "subject_id": 1,
-                "sub_subject_id": 1,
-                "student_class_id": 1,
-                "day_id": 1,
-                "date": "2025-10-01",
-                "starting_time": "10:00:00",
-                "ending_time": "10:45:00",
-                "created_at": "2025-03-07T10:12:29.000000Z",
-                "updated_at": "2025-03-07T10:12:29.000000Z"
-            }
-          */
+
           //show the view code ...
 
         }catch(Exception $ex){
@@ -207,10 +194,57 @@ class RoutineController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Routine $routine)
+    public function routine_update(Request $request)
     {
-        //
+        try {
+            // Find the routine by ID
+            $routine = Routine::findOrFail($request->id);
+    
+           
+            $routineExists = Routine::where('student_class_id', $request->student_class_id)
+                ->where('id', '=', $routine->id) 
+                ->where('subject_id', $request->subject_id)
+                ->where('sub_subject_id', $request->sub_subject_id)
+                ->where('day_id', $request->day_id)
+                ->where('date', $request->date)
+                ->where('starting_time', $request->starting_time)
+                ->where('ending_time', $request->ending_time) 
+                ->exists();
+    
+            if ($routineExists) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Routine already exists'
+                ], 409); // 409 Conflict status code
+            }
+    
+            // Update the routine with the new data
+            $routine->update([
+                'subject_id' => $request->subject_id,
+                'sub_subject_id' => $request->sub_subject_id,
+                'day_id' => $request->day_id,
+                'date' => $request->date,
+                'starting_time' => $request->starting_time,
+                'ending_time' => $request->ending_time,
+            ]);
+    
+            // Return success response
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Routine updated successfully'
+            ], 200);
+    
+        } catch (\Exception $ex) {
+            // Handle exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => $ex->getMessage()
+            ], 500);
+        }
     }
+    
+    
+    
 
     /**
      * Remove the specified resource from storage.
