@@ -76,12 +76,13 @@
                                             <option value="" selected disabled>Choose a day</option>
                                         </select>
                                     </div>
-                                    <button class="btn btn-primary pdfdownloadbutton d-flex align-items-center px-3">
-                                        <i class="bi bi-download me-2"></i> 
+                                    <button class="btn btn-primary d-flex align-items-center px-3"
+                                        id="pdfdownloadbutton">
+                                        <i class="bi bi-download me-2"></i>
                                         <span class="dayNameForPdf">Routine Download PDF</span>
                                     </button>
                                 </div>
-                                
+
                                 <table class="table table-bordered" id="routineTableParent">
                                     <thead>
                                         <tr>
@@ -133,6 +134,7 @@
             let lists = res.data.dayLists;
 
 
+
             const daySelect = document.getElementById('routineDaySelect');
 
 
@@ -140,6 +142,8 @@
 
 
             if (lists.length === 0) {
+                document.getElementById('pdfdownloadbutton').style.display =
+                    'none'; // Hide the button if no data is found
                 // If no data found, add a default option
                 let option = document.createElement('option');
                 option.value = '';
@@ -449,6 +453,7 @@
             if (res.data.status === 'success') {
                 // Handle empty data case
                 if (res.data.routines.length === 0) {
+                    document.getElementById('pdfdownloadbutton').style.display = 'none';
                     if (dayId) {
                         // Reset to previous valid selection
                         document.getElementById('filterByDay').value = currentDayId ? currentDayId : '';
