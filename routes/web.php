@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DayController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoutineController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DayController;
 use App\Http\Controllers\SubSubjectController;
 use App\Http\Controllers\ExamScheduleController;
 use App\Http\Controllers\StudentClassController;
@@ -19,6 +20,7 @@ Route::post('/user-login', [UserController::class, 'userLogin']);
 
 
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard']);
+    Route::get('/teachers/lists', [TeacherController::class, 'teacher_lists_page']);
     Route::get('/days/lists', [DayController::class, 'day_lists_page']);
     Route::get('/class/lists', [StudentClassController::class, 'student_class']);
     Route::get('/subject/lists', [SubjectController::class, 'subject_lists']);
@@ -30,7 +32,6 @@ Route::post('/user-login', [UserController::class, 'userLogin']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
     //day route
     Route::get('/day-lists', [DayController::class, 'day_lists']);
     Route::post('/create-day-post', [DayController::class, 'store']);
@@ -76,5 +77,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/routine-delete-by-id', [RoutineController::class, 'routine_delete_by_id']);
     Route::post('/routine-detail-by-id', [RoutineController::class, 'routine_detail_by_id']);
     Route::post('/routine-update', [RoutineController::class, 'routine_update']);
+
+
+    //teacher route
+   
+    // Route::post('/teacher-create', [TeacherController::class, 'teacher_create']);
+    // Route::post('/teacher-delete-by-id', [TeacherController::class, 'teacher_delete_by_id']);
+    // Route::post('/teacher-detail-by-id', [TeacherController::class, 'teacher_detail_by_id']);
+    // Route::post('/teacher-update', [TeacherController::class, 'teacher_update']);
 });
 
