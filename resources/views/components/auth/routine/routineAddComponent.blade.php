@@ -69,17 +69,23 @@
                         </div>
                         <div class="card-body row g-3">
                             <div class="col-md-12 col-sm-12 col-xs-12 col-xl-12">
-                                <div class="col-md-2 mb-3">
-                                    <label class="form-label">Filter By Day</label>
-                                    <select class="form-select routine-subject" aria-label="Default select example"
-                                        name="day_id" id="filterByDay">
-                                    </select>
-                                    <span id="routineDayError" class="text-danger"></span>
+                                <div class="col-md-6 mb-3 d-flex align-items-end gap-3">
+                                    <div class="flex-grow-1">
+                                        <label for="filterByDay" class="form-label fw-bold">Filter By Day</label>
+                                        <select class="form-select routine-subject" name="day_id" id="filterByDay">
+                                            <option value="" selected disabled>Choose a day</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary pdfdownloadbutton d-flex align-items-center px-3">
+                                        <i class="bi bi-download me-2"></i> 
+                                        <span class="dayNameForPdf">Routine Download PDF</span>
+                                    </button>
                                 </div>
+                                
                                 <table class="table table-bordered" id="routineTableParent">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Day</th>
+                                            <th scope="col">Sri No.</th>
                                             <th scope="col">Subject Name</th>
                                             <th scope="col">Subject Paper</th>
                                             <th scope="col">Class Time</th>
@@ -376,7 +382,7 @@
                 console.log(res.data.message);
             }
         } catch (error) {
-            console.error("Error:", error);
+            //console.error("Error:", error);
             Swal.fire({
                 title: "Error!",
                 text: "Failed to submit routine data.",
@@ -387,202 +393,154 @@
     }
 
 
+    // Global variables to maintain state
+    let currentDayId = null;
+    let currentClassId = null;
 
-    //getFilterByDay for listsing 
+    // Modified getFilterByDay function
     getFilterByDay();
     async function getFilterByDay() {
         try {
-            // Fetch the day lists from the backend
             let res = await axios.get('/day-lists');
+            let parent = document.getElementById('filterByDay');
 
-            // Check if the response contains data
-            if (res.data.dayLists.length > 0) {
-                let parent = document.getElementById('filterByDay');
-                parent.innerHTML = '';
+            if (res.data.dayLists?.length > 0) {
+                parent.innerHTML = '<option value="">Select a Day</option>';
 
-                // Add a default option
-                let defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = 'Select a Day'; // Default option
-                parent.appendChild(defaultOption);
-
-                // Loop through the day lists and create options
                 res.data.dayLists.forEach(day => {
-                    let option = document.createElement('option');
-                    option.value = day.id;
-                    option.textContent = day.name;
+                    let option = new Option(day.name, day.id);
+                    option.selected = (day.id === currentDayId);
                     parent.appendChild(option);
                 });
 
-                // Add event listener to the select element
                 parent.addEventListener('change', function() {
-                    let dayId = this.value;
-                    let studentClassId = document.getElementById('student_class_id').value;
+                    currentDayId = this.value;
+                    currentClassId = document.getElementById('student_class_id').value;
 
-                    // Call the function to fetch routines
-                    getUploadedRoutinelist(studentClassId, dayId);
+                    if (currentClassId) {
+                        getUploadedRoutinelist(currentClassId, currentDayId);
+                    }
                 });
-            } else {
-                console.error("No data found in the response.");
+
+                // Auto-select if previous selection exists
+                if (currentDayId) {
+                    parent.value = currentDayId;
+                }
             }
         } catch (error) {
-            console.error('Error fetching day lists:', error);
+            console.error('Error:', error);
+            Swal.fire('Error!', 'Failed to load days', 'error');
         }
     }
 
-
-
-
-
-    // Routine list function
+    // Modified getUploadedRoutinelist function
     async function getUploadedRoutinelist(studentClassId, dayId = null) {
         try {
             let tableBody = $('#routineTableBody');
+            tableBody.html('<tr><td colspan="6" class="text-center">No Routine Found</td></tr>');
+
             let res = await axios.post('/routine-lists-by-class-id', {
                 student_class_id: studentClassId,
-                day_id: dayId // Pass day_id to backend
+                day_id: dayId
             });
 
+            tableBody.empty();
+
             if (res.data.status === 'success') {
-                let routines = res.data.routines;
-
-                // Clear existing table data
-                if (routineTable) {
-                    routineTable.clear().destroy();
-                }
-                tableBody.empty();
-
-                if (routines.length > 0) {
-                    routines.forEach((routine) => {
-                        let startingTime = routine.starting_time;
-                        let endingTime = routine.ending_time;
-                        let timeSlot = `${startingTime} - ${endingTime}`;
-                        let day = routine.day.name;
-                        let subject = routine.subject_name.name ? routine.subject_name.name : '';
-                        let paper = routine.subject_paper.sub_subject_name === 'null' ? 'N/A' : routine
-                            .subject_paper.sub_subject_name;
-
-                        let row = `
-                        <tr>
-                            <td>${day}</td>
-                            <td>${subject}</td>
-                            <td>${paper}</td>
-                            <td>${timeSlot}</td>
-                            <td>
-                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                    <button type="button" class="btn btn-danger routineDeleteBtn" data-id='${routine.id}'>Delete</button>
-                                    <button type="button" class="btn btn-success routineViewBtn" data-id='${routine.id}'>Update</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                        tableBody.append(row);
-                    });
-
-
-                      //routine delete by id 
-                      $('.routineDeleteBtn').click(async function() {
-                        let id = $(this).data('id'); 
-                        // SweetAlert
+                // Handle empty data case
+                if (res.data.routines.length === 0) {
+                    if (dayId) {
+                        // Reset to previous valid selection
+                        document.getElementById('filterByDay').value = currentDayId ? currentDayId : '';
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, delete it!'
-                        }).then(async (result) => {
-                            if (result.isConfirmed) {
-                                try {
-                                    let res = await axios.post('/routine-delete-by-id', {
-                                        id: id
-                                    });
-                                    if (res.data.status === 'success') {
-                                        Swal.fire({
-                                            title: 'Deleted!',
-                                            text: res.data.message,
-                                            icon: 'success',
-                                            timer: 1500
-                                        });
-                                        let student_class_id = document.getElementById('student_class_id').value;
-                                        await getUploadedRoutinelist(student_class_id); 
-                                    } else {
-                                        Swal.fire({
-                                            title: 'Error!',
-                                            text: res.data.message,
-                                            icon: 'error',
-                                            timer: 3000
-                                        });
-                                    }
-                                } catch (error) {
-                                    console.error("Error:", error);
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: 'Failed to delete routine.',
-                                        icon: 'error',
-                                        timer: 3000
-                                    });
-                                }
-                            }
+                            title: "No Data!",
+                            text: "No routines found for selected day",
+                            icon: "info",
+                            timer: 2000
                         });
+                    }
+                    tableBody.html('<tr><td colspan="6" class="text-center">No routines found</td></tr>');
+                    return;
+                }
+
+                // Populate table
+                res.data.routines.forEach((routine, index) => {
+                    let row = `
+                    <tr>
+                        <td>${index+1}</td>
+                        <td>${routine.subject_name?.name || 'N/A'}</td>
+                        <td>${routine.subject_paper?.sub_subject_name || 'N/A'}</td>
+                        <td>${routine.starting_time} - ${routine.ending_time}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-danger routineDeleteBtn" data-id='${routine.id}'>Delete</button>
+                                <button class="btn btn-success routineViewBtn" data-id='${routine.id}'>Update</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                    tableBody.append(row);
+                });
+
+                // Event delegation for dynamic buttons
+                $('#routineTableParent')
+                    .off('click', '.routineDeleteBtn')
+                    .on('click', '.routineDeleteBtn', async function() {
+                        let id = $(this).data('id');
+                        await handleDeleteRoutine(id);
                     });
 
-                    //routine update by id
-                    $('.routineViewBtn').click(async function() {
+                $('#routineTableParent')
+                    .off('click', '.routineViewBtn')
+                    .on('click', '.routineViewBtn', async function() {
                         let id = $(this).data('id');
                         await viewRoutineComponent(id);
                         $('#routineViewModal').modal('show');
-
-                    })
-
-
-                    // Reinitialize DataTable
-                    routineTable = $('#routineTableParent').DataTable({
-                        paging: true,
-                        searching: true,
-                        ordering: true,
-                        info: true,
-                        responsive: true
                     });
-                } else {
-                    // Show message if no data found
-                    if (dayId) {
-                        Swal.fire({
-                            title: "No Data!",
-                            text: "No routines found for the selected day.",
-                            icon: "info",
-                            timer: 3000
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "No Data!",
-                            text: "No routines found for this class.",
-                            icon: "info",
-                            timer: 3000
-                        });
-                    }
-                }
-            } else if (res.data.status === 'error') {
-                // Show backend error message
-                Swal.fire({
-                    title: "Error!",
-                    text: res.data.message, // Backend error message
-                    icon: "error",
-                    timer: 3000
-                });
-            } else {
-                console.log("Data not found.");
             }
         } catch (error) {
-            console.error("Error:", error);
-            Swal.fire({
-                title: "Error!",
-                text: "Failed to load routine data.",
-                icon: "error",
-                timer: 3000
-            });
+            let tableBody2 = $('#routineTableBody');
+            //console.error("Error:", error);
+            Swal.fire('Error!', error.response?.data?.message || 'Failed to load data', 'error');
+            tableBody2.html('<tr><td colspan="6" class="text-center text-danger">No data Found</td></tr>');
         }
+    }
+
+    // Unified delete handler
+    async function handleDeleteRoutine(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    let res = await axios.post('/routine-delete-by-id', {
+                        id: id
+                    });
+                    if (res.data.status === 'success') {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: res.data.message,
+                            icon: 'success',
+                            timer: 1500
+                        });
+                        // Refresh with current filters
+                        getUploadedRoutinelist(currentClassId, currentDayId);
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: error.response?.data?.message || 'Deletion failed',
+                        icon: 'error',
+                        timer: 3000
+                    });
+                }
+            }
+        });
     }
 </script>
 

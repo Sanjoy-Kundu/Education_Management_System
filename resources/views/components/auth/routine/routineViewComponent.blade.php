@@ -248,6 +248,8 @@
                     if (paperName === 'No paper found') {
                         option.disabled = true;
                         option.style.color = 'red';
+                        option.selected = true;
+                        found = true;
                     } else {
                         option.style.color = 'blue';
                         if (element.id.toString() === subject_paper_id?.toString()) {
@@ -351,7 +353,7 @@
         } catch (error) {
  
             let errorMessage = error.response?.data?.message || "Something went wrong";
-            console.error("Error updating routine:", error);
+            //console.error("Error updating routine:", error);
             Swal.fire({
                 title: "Server Error!",
                 text: errorMessage,
