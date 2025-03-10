@@ -87,6 +87,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Sri No.</th>
+                                            <th scope="col">Day</th>
                                             <th scope="col">Subject Name</th>
                                             <th scope="col">Subject Paper</th>
                                             <th scope="col">Class Time</th>
@@ -126,7 +127,7 @@
 
 
     //get day name 
-    routineDayLists();
+     routineDayLists();
     async function routineDayLists() {
         try {
 
@@ -470,9 +471,11 @@
 
                 // Populate table
                 res.data.routines.forEach((routine, index) => {
+                    console.log(routine);
                     let row = `
                     <tr>
                         <td>${index+1}</td>
+                        <td>${routine.day.name}</td>
                         <td>${routine.subject_name?.name || 'N/A'}</td>
                         <td>${routine.subject_paper?.sub_subject_name || 'N/A'}</td>
                         <td>${routine.starting_time} - ${routine.ending_time}</td>
