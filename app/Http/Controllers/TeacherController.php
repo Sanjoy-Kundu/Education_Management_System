@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
+use App\Mail\AccountCreation;
 use Exception;
+use App\Models\User;
+use App\Models\Teacher;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class TeacherController extends Controller
 {
@@ -23,17 +29,43 @@ class TeacherController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function teacher_create(Request $request)
     {
-        //
+        
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+        ],[
+            'name.required' => 'Name is required',
+            'email.required' => 'Email is required',
+            'email.unique' => 'Email is already taken',
+        ]);
+        try{
+         
+                $randomPassword = Str::random(8);
+                User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($randomPassword),
+                    'role' => 'teacher',
+                ]);
+
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => $randomPassword,
+                    'role' => 'teacher',
+                ];
+
+                Mail::to($request->email)->send(new AccountCreation($randomPassword, $data));
+
+
+                return response()->json(['status' => 'success', 'message' => 'Teacher created successfully']);
+         
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
     }
 
     /**

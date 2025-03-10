@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->enum('gender', ['male', 'female', 'other']);
             $table->date('dob')->nullable();
@@ -27,7 +25,7 @@ return new class extends Migration
             $table->decimal('result')->nullable(); // Result (e.g., 3.4 out of 5)
             $table->integer('experience')->nullable(); // Years of experience
             $table->string('subject')->nullable();    // Subject taught (e.g., Math, Science)
-            $table->date('joining_date');              // Date the teacher joined
+            $table->date('joining_date')->nullable();              // Date the teacher joined
             $table->decimal('salary')->nullable(); // Teacher's salary
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('profile_picture')->nullable(); // Profile picture
