@@ -30,8 +30,8 @@
 
 
 <script>
-  let token = localStorage.getItem('authToken');
-  if (!token) {
+  let TeacherCreateToken = localStorage.getItem('authToken');
+  if (!TeacherCreateToken) {
       window.location.href = "/login";
   }
 
@@ -67,7 +67,7 @@
       try {
           let res = await axios.post('/teacher-create', data, {
               headers: {
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${TeacherCreateToken}`,
                   'Content-Type': 'application/json'
               }
           });

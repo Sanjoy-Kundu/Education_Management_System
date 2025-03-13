@@ -10,23 +10,24 @@
                     <div class="card">
                         <h5 class="card-header">Teacher Lists</h5>
                         <div class="card-body">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#teacherCreateModal">CREATE TEACHER</button><br><br>
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#teacherCreateModal">CREATE TEACHER</button><br><br>
                             <table class="table table-bordered" id="teacherTable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Image</th>
-                                            <th scope="col">Gender</th>
-                                            <th scope="col">Age</th>
-                                            <th scope="col">Action</th>
-                                       
-                                        </tr>
-                                    </thead>
-                                    <tbody id="lists-table-body">
-                                    
-                                    </tbody>
-                          
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Gender</th>
+                                        <th scope="col">Age</th>
+                                        <th scope="col">Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="tacherTableBody">
+
+                                </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -34,3 +35,11 @@
             </div>
         </div>
     </main>
+
+
+
+
+    <script>
+
+
+    </script>
