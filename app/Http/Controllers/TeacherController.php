@@ -66,30 +66,7 @@ class TeacherController extends Controller
      
              //  Step 2: Teacher Insert (Linked with `user_id`)
              Teacher::create([
-                 'user_id' => $user->id, // ✅ Newly created user's ID
-                 'phone' => $request->phone ?? null,
-                 'gender' => $request->gender ?? 'other',
-                 'dob' => $request->dob ?? null,
-                 'address' => $request->address ?? null,
-                 'qualification' => $request->qualification ?? null,
-                 'institution' => $request->institution ?? null,
-                 'duration' => $request->duration ?? null,
-                 'year_of_graduation' => $request->year_of_graduation ?? null,
-                 'result' => $request->result ?? null,
-                 'experience' => $request->experience ?? null,
-                 'subject' => $request->subject ?? null,
-                 'joining_date' => $request->joining_date ?? now(),
-                 'salary' => $request->salary ?? null,
-                 'status' => 'active',
-                 'profile_picture' => $request->profile_picture ?? null,
-                 'cv' => $request->cv ?? null,
-                 'id_card' => $request->id_card ?? null,
-                 'passport' => $request->passport ?? null,
-                 'bank_account' => $request->bank_account ?? null,
-                 'tin' => $request->tin ?? null,
-                 'nid' => $request->nid ?? null,
-                 'driving_license' => $request->driving_license ?? null,
-                 'description' => $request->description ?? null,
+                 'user_id' => $user->id, 
              ]);
      
              // Step 3: Send Email
