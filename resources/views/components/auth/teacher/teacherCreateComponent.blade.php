@@ -84,7 +84,7 @@
               let modal = bootstrap.Modal.getInstance(document.getElementById('teacherCreateModal'));
               modal.hide();
 
-
+              await  getTeacherList();
               document.getElementById('teacher_form').reset();
           }
       } catch (error) {

@@ -32,6 +32,7 @@ Route::post('/user-login', [UserController::class, 'userLogin']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/auth-check', [DashboardController::class, 'authCheck']);
     //day route
     Route::get('/day-lists', [DayController::class, 'day_lists']);
     Route::post('/create-day-post', [DayController::class, 'store']);

@@ -6,8 +6,7 @@
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            <span class="text-white ps-3" id="userEmailNav">sanjoykndu@gmail.com</span> <br>
         </div>
     </form>
     <!-- Navbar-->
@@ -15,11 +14,40 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item" href="#!">Profile</a></li>
+                <li><a class="dropdown-item" href="#!"></a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="#!">Logout</a></li>
             </ul>
         </li>
     </ul>
 </nav>
+
+
+<script>
+    userDetails();
+     async  function userDetails(){
+        let authToken = localStorage.getItem('authToken');
+        if(!authToken){
+            window.location.href ="/login"
+        }
+     
+        try{
+            let res = await axios.get('/auth-check',{
+                headers:{
+                    'Authorization':`Bearer ${authToken}`
+                }
+            })
+            
+            if(res.data.status === 'success'){
+                document.getElementById('userEmailNav').innerText = res.data.users.email
+            }else{
+                window.location.href='/login'
+            }
+            console.log(res.data)
+        }catch(error){
+            console.error('error',error);
+        }
+
+    }
+</script>

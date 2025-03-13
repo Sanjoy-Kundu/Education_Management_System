@@ -28,14 +28,14 @@ class TeacherController extends Controller
     }
 
 
-    // public function teacher_lists(){
-    //     try{
-    //         $teachers = User::where('role', 'teacher')->get();
-    //         return response()->json(['status' => 'success', 'teachers' => $teachers]);
-    //     }catch(Exception $ex){
-    //         return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
-    //     }
-    // }
+    public function teacher_lists(){
+        try{
+            $teachers = User::where('role', 'teacher')->get();
+            return response()->json(['status' => 'success', 'teachers' => $teachers]);
+        }catch(Exception $ex){
+            return response()->json(['status' => 'error', 'message' => $ex->getMessage()]);
+        }
+    }
 
 
 
