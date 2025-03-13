@@ -80,7 +80,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     //teacher route
-   
+    Route::get('/teacher-lists', [TeacherController::class, 'teacher_lists']);
      Route::post('/teacher-create', [TeacherController::class, 'teacher_create']);
       // Route::post('/teacher-delete-by-id', [TeacherController::class, 'teacher_delete_by_id']);
     // Route::post('/teacher-detail-by-id', [TeacherController::class, 'teacher_detail_by_id']);

@@ -45,6 +45,7 @@ class TeacherController extends Controller
          
                 $randomPassword = Str::random(8);
                 User::create([
+                    'user_id' => Auth::id(),
                     'name' => $request->name,
                     'email' => $request->email,
                     'password' => Hash::make($randomPassword),
