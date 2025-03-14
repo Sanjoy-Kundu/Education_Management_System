@@ -57,7 +57,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="uploadExam(event)">Upload Exam</button>
+          <button type="button" class="btn btn-primary" onclick="updateExam(event)">Update Exam Shedule</button>
         </div>
       </div>
     </div>
@@ -65,10 +65,18 @@
 
 
 <script>
+  let examSheduleEditToken = localStorage.getItem('authToken');
+  if(!examSheduleEditToken){
+    window.location.href = '/login';
+  }
     getSheduleSubjectLists()
     async function getSheduleSubjectLists(subject_id) {
         try {
-            let res = await axios.get('/subject-lists');
+            let res = await axios.get('/subject-lists',{
+              headers:{
+                Authorization: `Bearer ${examSheduleEditToken}`
+              }
+            });
             let lists = res.data.subjectLists;
             let selectSubject = $('#shedule-select-subject-lists');
             selectSubject.empty(); // Clear previous data
@@ -98,7 +106,11 @@
     getSheduleClassLists();
     async function getSheduleClassLists(class_id){
         try{
-            let res = await axios.get('/student-class-lists');
+            let res = await axios.get('/student-class-lists',{
+              headers:{
+                Authorization: `Bearer ${examSheduleEditToken}`
+              }
+            });
             let lists = res.data.classLists;
             let selectClass = $('#shedule-select-class-lists');
             selectClass.empty(); 
@@ -139,8 +151,11 @@
 
         document.getElementById('shedule_id').value = id;
         try{
-            let res = await axios.post('/exam-shedule-detail-by-id', {
-                id: id
+            let res = await axios.post('/exam-shedule-detail-by-id', {id: id},{
+              headers:{
+                Authorization: `Bearer ${examSheduleEditToken}`,
+                'Content-Type': 'application/json'
+              }
             });
             if(res.data.status === 'success'){
                 let examShedule = res.data.exam_schedule;
@@ -162,4 +177,26 @@
         }
 
     } 
+
+
+    function updateExam(event){
+        event.preventDefault();
+      let student_class_id = document.getElementById('shedule-select-class-lists').value;
+      let subject_id       = document.getElementById('shedule-select-subject-lists').value;
+      let name             =      document.getElementById('shedule_exam_name').value;
+      let exam_date        = document.getElementById('shedule_exam_date').value;
+      let start_time       = document.getElementById('shedule_starting_time').value;
+      let end_time         = document.getElementById('shedule_ending_time').value;
+      
+      let data = {
+        student_class_id: student_class_id,
+        subject_id: subject_id,
+        name: name,
+        exam_date: exam_date,
+        start_time: start_time,
+        end_time: end_time,
+      }
+      console.log(data);
+
+    }
 </script>

@@ -59,12 +59,20 @@
 </div>
 
 <script>
+    let examSheduleCreateToken = localStorage.getItem('authToken');
+    if(!examSheduleCreateToken){
+        window.location.href = '/login';
+    }
     // Fetch class lists
     ClassSelectLists();
     async function ClassSelectLists() {
         try {
      // Fetch class lists from the server
-     let res = await axios.get('/student-class-lists');
+     let res = await axios.get('/student-class-lists',{
+        headers:{
+            Authorization:`Bearer ${examSheduleCreateToken}`
+        }
+     });
         let lists = res.data.classLists;
 
         // Get the select element for class lists
@@ -91,8 +99,11 @@
         let student_class_id = $(this).val();
 
         try {
-            let res = await axios.post('/subject-lists-by-class-id', {
-                student_class_id: student_class_id
+            let res = await axios.post('/subject-lists-by-class-id', {student_class_id: student_class_id},{
+                headers: {
+                    Authorization: `Bearer ${examSheduleCreateToken}`,
+                    'Content-Type': 'application/json'
+                }
             });
             let lists = res.data.subjectLists;
             let listSectionBody = $('#select-subject-lists');
@@ -119,7 +130,12 @@
     $('#select-subject-lists').on('change', async function() {
         let subject_id = $(this).val();
         try {
-            let res = await axios.post('/sub-subject-lists-by-subject-id', { subject_id: subject_id });
+            let res = await axios.post('/sub-subject-lists-by-subject-id', { subject_id: subject_id },{
+                headers: {
+                    Authorization: `Bearer ${examSheduleCreateToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (res.data.status === 'success') {
                 document.querySelector('#sub-subject-group-section').classList.remove('d-none');
                 let lists = res.data.sub_subjects_lists;
@@ -218,14 +234,11 @@
         console.log("Data to be sent to server:", data);
 
         try {
-            const token = localStorage.getItem('authToken'); 
-            if (!token) {
-                throw new Error('No token found in localStorage');
-            }
+        
 
             let res = await axios.post('/exam-schedule-post', data, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${examSheduleCreateToken}`,
                     'Content-Type': 'application/json'
                 }
             });
