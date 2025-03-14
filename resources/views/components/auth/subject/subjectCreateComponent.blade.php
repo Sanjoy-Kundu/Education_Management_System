@@ -30,11 +30,19 @@
 </div>
 
 <script>
+  let subjectCreateToken = localStorage.getItem('authToken');
+  if(!subjectCreateToken){
+    window.location.href = '/login';
+  }
   // Fetch class lists
   getClassSelectLists();
   async function getClassSelectLists() {
     try {
-      let res = await axios.get('/student-class-lists');
+      let res = await axios.get('/student-class-lists',{
+        headers: {
+          Authorization: `Bearer ${subjectCreateToken}`
+        }
+      });
       let lists = res.data.classLists;
       let listSectionBody = $('#select-class-lists');
       listSectionBody.empty(); // Clear previous data
@@ -85,16 +93,11 @@
     };
 
     try {
-      let token = localStorage.getItem('authToken');
-      if (!token) {
-        console.error('No auth token found');
-        return;
-      }
       let res = await axios.post('/subject-post', data, {
         headers: {
+           Authorization: `Bearer ${subjectCreateToken}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+        }
       });
 
       if (res.data.status === 'success') {

@@ -41,9 +41,17 @@
 
 
 <script>
+    let subjectEditToken = localStorage.getItem('authToken');
+    if(!subjectEditToken){
+        window.location.href = '/login';
+    }
     async function getEidtClassSelectLists(class_id) {
         try {
-            let res = await axios.get('/student-class-lists');
+            let res = await axios.get('/student-class-lists',{
+                headers: {
+                    Authorization: `Bearer ${subjectEditToken}`
+                }
+            });
             let lists = res.data.classLists;
             let listSectionBody = $('#edit-select-class-lists');
             listSectionBody.empty(); // Clear previous data
@@ -69,8 +77,11 @@
     async function subjectEditShow(id) {
         document.getElementById('subject_id').value = id;
         try {
-            let res = await axios.post("/subject-detail-by-id", {
-                id: id
+            let res = await axios.post("/subject-detail-by-id",{id: id},{
+                headers: {
+                    Authorization: `Bearer ${subjectEditToken}`,
+                    'Content-Type': 'application/json'
+                }
             });
             if (res.data.status === 'success') {
 
@@ -118,7 +129,12 @@
         };
 
         try {
-            let res = await axios.post('/subject-update-by-id', data);
+            let res = await axios.post('/subject-update-by-id', data,{
+                headers: {
+                    Authorization: `Bearer ${subjectEditToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (res.data.status === 'success') {
                 Swal.fire({
                     title: "Updated!",

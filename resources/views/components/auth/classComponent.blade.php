@@ -36,17 +36,19 @@
 
 
 <script>
-        let token = localStorage.getItem('authToken');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            console.error('No auth token found');
+        let classListToken = localStorage.getItem('authToken');
+        if (!classListToken) {
+            window.location.href = '/login';
         }
         getClassLists();
         async function getClassLists() {
             try {
 
-                let res = await axios.get('/student-class-lists');
+                let res = await axios.get('/student-class-lists',{
+                    headers: {
+                        Authorization: `Bearer ${classListToken}`
+                    }
+                });
                 let lists = res.data.classLists;
                 let listTableBody = $('#lists-table-body')
                 listTableBody.empty(); //clear previous data
@@ -56,7 +58,7 @@
                 }
 
                 lists.forEach((element,index) => {
-                    console.log(element)
+                    //console.log(element)
                     let tr = `
                               <tr>
                                 <th scope="row">${index+1}</th>
@@ -98,7 +100,12 @@
                     }).then(async (result) => {
                     if (result.isConfirmed) {
                         try{
-                            let res = await axios.post('/student-class-delete-by-id',{id:id})
+                            let res = await axios.post('/student-class-delete-by-id',{id:id},{
+                                headers: {
+                                    Authorization: `Bearer ${classListToken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
                             if(res.data.status === 'success'){
                                 await getClassLists();
                                 Swal.fire({

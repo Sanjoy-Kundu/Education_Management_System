@@ -44,11 +44,9 @@
 
 
     <script>
-        let token = localStorage.getItem('authToken');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            console.error('No auth token found');
+        let SubjectListToken = localStorage.getItem('authToken');
+        if (!SubjectListToken) {
+            window.location.href = '/login';
         }
 
 
@@ -56,7 +54,11 @@
              filteringClassLists()
         async function filteringClassLists(classId = '') {
             try {
-                let res = await axios.get('/student-class-lists');
+                let res = await axios.get('/student-class-lists',{
+                    headers: {
+                        Authorization: `Bearer ${SubjectListToken}`
+                    }
+                });
                 let classes = res.data.classLists;
                 let classFilter = $('#subjectComponentClassFilter');
                 classFilter.empty();
@@ -81,7 +83,11 @@
         getSubjectListsShow()
         async function getSubjectListsShow(class_id = "") {
             try {
-                let res = await axios.get('/subject-lists');
+                let res = await axios.get('/subject-lists',{
+                    headers: {
+                        Authorization: `Bearer ${SubjectListToken}`
+                    }
+                });
                 let lists = res.data.subjectLists;
 
                 if(class_id){
@@ -143,8 +149,11 @@
                         if (result.isConfirmed) {
                             try {
                                 // Send the delete request
-                                let res = await axios.post('/subject-delete-by-id', {
-                                    id: id
+                                let res = await axios.post('/subject-delete-by-id', {id: id},{
+                                    headers:{
+                                        Authorization: `Bearer ${SubjectListToken}`,
+                                        'Content-Type': 'application/json'
+                                    }
                                 });
                                 console.log(res); // Log the response to check the status
                                 if (res.data.status === 'success') {

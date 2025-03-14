@@ -66,10 +66,19 @@
 </div>
 
 <script>
+    let subSubjetCreateToken = localStorage.getItem('authToken');
+    if(!subSubjetCreateToken){
+        window.location.href = '/login';
+    }
     async function subSubjectCreateShow(id) {
         document.getElementById('sub_subject_id').value = id;
         try {
-            let res = await axios.post('/subject-detail-by-id', {id: id});
+            let res = await axios.post('/subject-detail-by-id', {id: id},{
+                headers: {
+                    Authorization: `Bearer ${subSubjetCreateToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (res.data.status === 'success') {
                 let subject = res.data.subject;
                 //console.log(subject.student_class.id)
@@ -139,7 +148,12 @@
 
         //console.log(data);
         try {
-            let res = await axios.post('/sub-subject-create', data);
+            let res = await axios.post('/sub-subject-create', data,{
+                headers: {
+                    Authorization: `Bearer ${subSubjetCreateToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (res.data.status === 'success') {
                 Swal.fire({
                     icon: "success",

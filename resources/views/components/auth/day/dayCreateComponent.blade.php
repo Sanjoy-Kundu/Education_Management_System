@@ -23,6 +23,7 @@
   </div>
 
   <script>
+    let dayCreateToken = localStorage.getItem('authToken');
     async function createDay(event){
         event.preventDefault();
         document.getElementById('day_name_error').innerText = "";
@@ -47,7 +48,12 @@
         console.log(data);
 
        try{
-        let res = await axios.post('/create-day-post',data)
+        let res = await axios.post('/create-day-post',data,{
+            headers:{
+              Authorization: `Bearer ${dayCreateToken}`, 
+              'Content-Type': 'application/json'
+            }
+        })
         if(res.data.status === 'success'){
             document.getElementById('name').value = ""
             document.getElementById('day_modal_close').click();

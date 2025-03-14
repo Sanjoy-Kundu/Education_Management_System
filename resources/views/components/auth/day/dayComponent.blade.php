@@ -34,18 +34,21 @@
 
 
 <script>
-        let token = localStorage.getItem('authToken');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        } else {
-            console.error('No auth token found');
-        }
-        console.log(token);
+        let Daytoken = localStorage.getItem('authToken');
+        if (!Daytoken) {
+            window.location.href = '/login';
+           //axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } 
+        //console.log(token);
         getDayLists();
         async function getDayLists() {
             try {
 
-                let res = await axios.get('/day-lists');
+                let res = await axios.get('/day-lists',{
+                    headers: {
+                        Authorization: `Bearer ${Daytoken}`
+                    }
+                });
                 let lists = res.data.dayLists;
                 let listTableBody = $('#lists-table-body')
                 listTableBody.empty(); //clear previous data
@@ -55,7 +58,7 @@
                 }
 
                 lists.forEach((element,index) => {
-                    console.log(element)
+                   // console.log(element)
                     let tr = `
                               <tr>
                                 <th scope="row">${index+1}</th>
@@ -94,7 +97,12 @@
                     }).then(async (result) => {
                     if (result.isConfirmed) {
                         try{
-                            let res = await axios.post('/day-delete-by-id',{id:id})
+                            let res = await axios.post('/day-delete-by-id',{id:id},{
+                                headers: {
+                                    Authorization: `Bearer ${Daytoken}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
                             if(res.data.status === 'success'){
                                 await getDayLists();
                                 Swal.fire({

@@ -33,6 +33,10 @@
   </div>
 
   <script>
+    let classCreateToken = localStorage.getItem('authToken');
+    if(!classCreateToken){
+      window.location.href = '/login';
+    }
     async function createClass(event){
         event.preventDefault();
         document.getElementById('class_name_error').innerText = "";
@@ -51,10 +55,7 @@
         }
 
 
-        // if(!capacity){
-        //     document.getElementById('class_capacity_error').innerText = "Capacity Field is required";
-        //     isError = true
-        // }
+    
 
 
         if(isError) return 
@@ -65,7 +66,12 @@
         }
 
        try{
-        let res = await axios.post('/student-class-post',data)
+        let res = await axios.post('/student-class-post',data,{
+          headers:{
+            Authorization:`Bearer ${classCreateToken}`,
+            'Content-Type':'application/json',
+          }
+        })
         if(res.data.status === 'success'){
             document.getElementById('name').value = ""
             document.getElementById('section').value = ""

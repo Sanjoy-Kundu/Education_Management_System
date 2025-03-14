@@ -30,10 +30,19 @@
 
 
 <script>
+  let subSubjectViewToken = localStorage.getItem('authToken');
+  if(!subSubjectViewToken){
+    window.location.href = "/login";
+  }
    async function subSubjectViewShow(id) {
         document.getElementById('sub_subject_view_id').value = id;
       try{
-        let res = await axios.post("/sub-subject-view-lists", {subject_id: id});
+        let res = await axios.post("/sub-subject-view-lists", {subject_id: id},{
+          headers:{
+            Authorization: `Bearer ${subSubjectViewToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
         if(res.data.status === 'success'){
           $('#subSubjectViewTableBody').empty();
           let subSubjectLists = res.data.sub_subjects_lists;
